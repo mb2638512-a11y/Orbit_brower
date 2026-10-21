@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-src https:; connect-src https:;">
+<title>Orbit Browser</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,Segoe UI,Arial,sans-serif;background:#0b1020;color:#f5f7ff}
+*{box-sizing:border-box}body{margin:0;height:100vh;display:flex;flex-direction:column}
+header{padding:16px 18px;background:#10172a;border-bottom:1px solid #28334d}
+.brand{font-weight:900;letter-spacing:2px;color:#fff;font-size:18px;margin-bottom:12px}
+.bar{display:flex;gap:8px}input{flex:1;min-width:0;background:#19233a;border:1px solid #34415e;border-radius:12px;padding:13px;color:white;font-size:14px;outline:none}
+button{background:#6558f5;color:white;border:0;border-radius:11px;padding:10px 14px;font-weight:700;cursor:pointer}
+nav{display:flex;gap:8px;margin-top:10px}nav button{background:#202b43;color:#eaf0ff}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+#welcome{text-align:center;color:#9eacc9}#welcome h1{color:white;font-size:32px}#frame{display:none;width:100%;height:100%;border:0;border-radius:10px;background:white}
+small{color:#8d9bb9}
+</style>
+</head><body>
+<header><div class="brand">◉ ORBIT <small>DESKTOP</small></div>
+<form class="bar" id="search"><input id="url" autocomplete="off" spellcheck="false" placeholder="Search the web or enter a URL"><button>GO</button></form>
+<nav><button id="back">← Back</button><button id="forward">Forward →</button><button id="home">Home</button><button id="reload">Reload</button></nav>
+</header><main><div id="welcome"><h1>Explore beyond.</h1><p>Search or enter a website to get started.</p></div><iframe id="frame" title="Web content" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></main>
+<script src="renderer.js"></script></body></html>
