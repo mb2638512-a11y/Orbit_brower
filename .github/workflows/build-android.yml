@@ -9,7 +9,7 @@ on:
       - 'app.json'
       - '.github/workflows/build-android.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   android-apk:
     runs-on: ubuntu-latest
@@ -41,3 +41,12 @@ jobs:
           path: builds/android/Orbit-Browser-Android-debug.apk
           if-no-files-found: error
           retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: orbit-browser-android-latest
+          name: Orbit Browser Android (latest)
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: builds/android/Orbit-Browser-Android-debug.apk
