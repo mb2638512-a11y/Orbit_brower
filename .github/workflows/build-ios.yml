@@ -32,4 +32,4 @@ jobs:
           name: Orbit-Browser-iOS-Simulator
           path: builds/ios/Orbit-Browser-iOS-Simulator.zip
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
