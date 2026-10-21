@@ -55,6 +55,7 @@ jobs:
           prerelease: true
           make_latest: false
           overwrite_files: true
+          files: desktop/dist/*.exe
       - name: Delete stale assets from this Windows architecture release
         uses: actions/github-script@v7
         env:
@@ -72,4 +73,3 @@ jobs:
                 core.info('Deleted stale Windows asset: ' + asset.name);
               }
             }
-          files: desktop/dist/*.exe
