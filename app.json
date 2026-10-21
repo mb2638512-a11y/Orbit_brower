@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Orbit Browser",
+    "slug": "orbit-browser",
+    "scheme": "orbitbrowser",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": ["expo-router"],
+    "android": { "package": "com.orbitbrowser.app" },
+    "ios": { "bundleIdentifier": "com.orbitbrowser.app" }
+  }
+}
