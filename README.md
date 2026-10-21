@@ -7,8 +7,10 @@
 | Device / operating system | Download |
 |---|---|
 | Android phone or tablet (ARM64/ARM) | [**Download Android APK**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-android-latest) |
-| Windows 10/11 PC or laptop (x64) | [**Download Windows installer (.exe)**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-windows-latest) |
-| Linux PC (x86_64) | [**Download Linux AppImage**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-linux-latest) |
+| Windows 10/11 PC (64-bit Intel/AMD, x64) | [**Download Windows x64 installer (.exe)**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-windows-x64-latest) |
+| Windows on ARM PC (ARM64) | [**Download Windows ARM64 installer (.exe)**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-windows-arm64-latest) |
+| Linux PC (64-bit Intel/AMD, x64) | [**Download Linux x64 AppImage**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-linux-x64-latest) |
+| Linux ARM64 device | [**Download Linux ARM64 AppImage**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-linux-arm64-latest) |
 | Mac with Apple Silicon (M-series) | [**Download macOS ARM64 (.dmg)**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-macos-arm64-latest) |
 | Mac with Intel processor | [**Download macOS Intel (.dmg)**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-macos-x64-latest) |
 | iPhone/iPad | [**iOS Simulator build only**](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-ios-simulator-latest) — not installable on a regular iPhone/iPad |
@@ -33,4 +35,4 @@ GitHub Actions artifacts are temporary (configured for 90 days). The platform re
 
 This is an early browser-shell prototype, not a production-grade Chromium browser. Some websites block embedding. Full browser-engine capabilities, robust privacy/process isolation, production security review, complete tab/bookmark/extension support, and signed release builds still require further development.
 
-The `platform-builds` branch contains these build workflows. The `main` branch remains separate.
+The build workflows and documentation are now merged into `main`; `platform-builds` is also retained.
