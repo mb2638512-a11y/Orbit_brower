@@ -19,7 +19,7 @@
 
 ## Install notes
 
-- **Android:** download the APK, open it, and allow installation from this source if Android asks. This is a debug-signed testing build.
+- **Android:** download the APK, open it, and allow installation from this source if Android asks. This is a standalone testing build; it bundles JavaScript and does not require Metro.
 - **Windows:** download the EXE installer. It is currently unsigned, so Windows SmartScreen may show a warning.
 - **Linux:** download the AppImage, make it executable if needed, then run it.
 - **macOS:** download the DMG matching your processor. The app is currently unsigned, so macOS may warn before opening.
