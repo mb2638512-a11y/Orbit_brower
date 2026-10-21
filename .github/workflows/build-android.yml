@@ -1,8 +1,8 @@
-name: Build Orbit Browser APK
+name: Build Orbit Browser Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, platform-builds]
 permissions:
   contents: read
 jobs:
@@ -25,9 +25,11 @@ jobs:
       - name: Build installable debug APK
         working-directory: android
         run: chmod +x gradlew && ./gradlew assembleDebug
+      - name: Copy APK into build folder
+        run: mkdir -p builds/android && cp android/app/build/outputs/apk/debug/app-debug.apk builds/android/Orbit-Browser-debug.apk
       - uses: actions/upload-artifact@v4
         with:
           name: Orbit-Browser-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: builds/android/Orbit-Browser-debug.apk
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
