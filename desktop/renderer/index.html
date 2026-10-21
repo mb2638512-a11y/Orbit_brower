@@ -11,7 +11,7 @@ header{padding:16px 18px;background:#10172a;border-bottom:1px solid #28334d}
 .brand{font-weight:900;letter-spacing:2px;color:#fff;font-size:18px;margin-bottom:12px}
 .bar{display:flex;gap:8px}input{flex:1;min-width:0;background:#19233a;border:1px solid #34415e;border-radius:12px;padding:13px;color:white;font-size:14px;outline:none}
 button{background:#6558f5;color:white;border:0;border-radius:11px;padding:10px 14px;font-weight:700;cursor:pointer}
-nav{display:flex;gap:8px;margin-top:10px}nav button{background:#202b43;color:#eaf0ff}
+nav{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}nav button{background:#202b43;color:#eaf0ff}.searchNav button{padding:7px 10px;font-size:12px}.hint{align-self:center;color:#8d9bb9;font-size:11px;margin-left:auto}@media(max-width:600px){header{padding:10px}.hint{display:none}nav button{padding:8px;font-size:12px}#welcome h1{font-size:24px}}
 main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
 #welcome{text-align:center;color:#9eacc9}#welcome h1{color:white;font-size:32px}#frame{display:none;width:100%;height:100%;border:0;border-radius:10px;background:white}
 small{color:#8d9bb9}
@@ -19,6 +19,6 @@ small{color:#8d9bb9}
 </head><body>
 <header><div class="brand">◉ ORBIT <small>DESKTOP</small></div>
 <form class="bar" id="search"><input id="url" autocomplete="off" spellcheck="false" placeholder="Search the web or enter a URL"><button>GO</button></form>
-<nav><button id="back">← Back</button><button id="forward">Forward →</button><button id="home">Home</button><button id="reload">Reload</button><button id="updates">Updates ↻</button><button id="globalai">✦ Global AI</button></nav>
+<nav class="primaryNav"><button id="back">← Back</button><button id="forward">Forward →</button><button id="home">Home</button><button id="reload">Reload</button><button id="updates">Updates ↻</button><button id="globalai">✦ Global AI</button></nav>
 </header><section id="aiPanel" style="display:none;padding:18px;background:#10172a;border-bottom:1px solid #28334d"><h2 style="margin:0 0 8px">Orbit Global AI</h2><p style="color:#9eacc9">One hub for multi-engine search, AI model routing, and browser tools. Provider access must be configured; 80+ connections are not yet verified.</p><form id="aiSearch" class="bar"><input id="aiQuery" placeholder="Research a topic across the web"><button>Search</button></form><nav><button id="aiSearchTab">Search engines</button><button id="aiModels">AI models</button><button id="aiTools">Browser tools</button></nav><p id="aiStatus" style="color:#9eacc9">Prototype • web search shortcut available • model routing and automation need backend integration.</p></section><main><div id="welcome"><h1>Explore beyond.</h1><p>Search or enter a website to get started.</p></div><iframe id="frame" title="Web content" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></main>
 <script src="renderer.js"></script></body></html>
