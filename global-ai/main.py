@@ -2,7 +2,7 @@ import os, time
 from collections import defaultdict, deque
 from typing import Optional
 import httpx
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -27,7 +27,7 @@ async def health():
     return {"ok": True, "service": "orbit-global-ai", "search_configured": bool(os.getenv("SEARXNG_URL")), "ai_configured": bool(os.getenv("AI_BASE_URL") and os.getenv("AI_API_KEY") and os.getenv("AI_MODEL"))}
 
 @app.get("/api/search")
-async def search(request: Request, q: str = Field(min_length=1, max_length=300)):
+async def search(request: Request, q: str = Query(min_length=1, max_length=300)):
     rate_limit(request)
     base = os.getenv("SEARXNG_URL", "").rstrip("/")
     if not base: raise HTTPException(status_code=503, detail="Search backend is not configured. Set SEARXNG_URL.")
