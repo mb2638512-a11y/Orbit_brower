@@ -31,6 +31,10 @@ export default function Home() {
     const tag = platform ? `orbit-browser-${platform}-latest` : null;
     const releaseUrl = tag ? `https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/${tag}` : "https://github.com/mb2638512-a11y/Orbit_brower/releases";
     setUpdateUrl(releaseUrl);
+    if (Platform.OS === "ios") {
+      setUpdateStatus("iPhone auto-updates are not available yet: only a Simulator build exists. A signed App Store/TestFlight build is still required.");
+      return () => { alive = false; };
+    }
     fetch(tag ? `https://api.github.com/repos/mb2638512-a11y/Orbit_brower/releases/tags/${tag}` : "https://api.github.com/repos/mb2638512-a11y/Orbit_brower/releases?per_page=10")
       .then(async response => { if (!response.ok) throw new Error("Release check unavailable"); return response.json(); })
       .then(data => {
