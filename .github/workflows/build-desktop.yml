@@ -2,7 +2,7 @@ name: Build Orbit Browser Windows and Linux
 on:
   workflow_dispatch:
   push:
-    branches: [platform-builds]
+    branches: [main, platform-builds]
     paths:
       - 'desktop/**'
       - '.github/workflows/build-desktop.yml'
