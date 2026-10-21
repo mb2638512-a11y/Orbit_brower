@@ -22,6 +22,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [showPanel, setShowPanel] = useState<"none" | "bookmarks" | "history" | "engines" | "settings" | "globalai">("none");
   const [aiQuery, setAiQuery] = useState("");
+  const [aiEndpoint, setAiEndpoint] = useState("");
+  const [aiResult, setAiResult] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
   const [aiMode, setAiMode] = useState<"all" | "search" | "models" | "tools">("all");
   const [bookmarks, setBookmarks] = useState<Tab[]>([]);
   const [history, setHistory] = useState<Tab[]>([]);
@@ -57,12 +60,13 @@ export default function Home() {
     let alive = true;
     (async () => {
       try {
-        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1"]);
+        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1","orbit.globalai.endpoint.v1"]);
         if (!alive) return;
         const stored = Object.fromEntries(values);
         if (stored["orbit.bookmarks.v1"]) setBookmarks(JSON.parse(stored["orbit.bookmarks.v1"]));
         if (stored["orbit.history.v1"]) setHistory(JSON.parse(stored["orbit.history.v1"]));
         if (stored["orbit.searchProvider.v1"] && ["google","bing","duckduckgo","brave","wikipedia"].includes(stored["orbit.searchProvider.v1"]!)) setSearchProvider(stored["orbit.searchProvider.v1"] as typeof searchProvider);
+        if (stored["orbit.globalai.endpoint.v1"]) setAiEndpoint(stored["orbit.globalai.endpoint.v1"]!);
       } catch { /* storage may be unavailable on a device; browser remains usable */ }
       finally { if (alive) setStorageReady(true); }
     })();
@@ -71,6 +75,7 @@ export default function Home() {
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.bookmarks.v1", JSON.stringify(bookmarks)).catch(()=>{}); }, [bookmarks,storageReady]);
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.history.v1", JSON.stringify(history.slice(0,100))).catch(()=>{}); }, [history,storageReady]);
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.searchProvider.v1", searchProvider).catch(()=>{}); }, [searchProvider,storageReady]);
+  useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.globalai.endpoint.v1", aiEndpoint.trim()).catch(()=>{}); }, [aiEndpoint,storageReady]);
   const web = useRef<WebView>(null);
   const current = tabs.find(t => t.id === active) || tabs[0];
   const bg = dark ? "#0b1020" : "#f4f6fb";
@@ -87,6 +92,22 @@ export default function Home() {
     setHistory(old => privateMode ? old : [{ id: Date.now(), title: url, url }, ...old.filter(h => h.url !== url)].slice(0, 100));
     setShowPanel("none");
     Keyboard.dismiss();
+  };
+  const runGlobalSearch = async () => {
+    const q = aiQuery.trim(); if (!q) { setAiResult("Enter a topic to search."); return; }
+    if (!/^https?:\/\//i.test(aiEndpoint.trim())) { setAiResult("Set your Global AI backend URL below (for example https://your-server.example). No server is configured yet."); return; }
+    setAiBusy(true); setAiResult("Searching…");
+    try { const response = await fetch(aiEndpoint.trim().replace(/\/$/, "") + "/api/search?q=" + encodeURIComponent(q)); const data = await response.json(); if (!response.ok) throw new Error(data.detail || "Search unavailable"); const rows = (data.results || []).slice(0,8); setAiResult(rows.length ? rows.map((r:any,i:number)=>`${i+1}. ${r.title}\n${r.url}\n${r.content || ""}`).join("\n\n") : "No results found."); }
+    catch (e:any) { setAiResult("Global search failed: " + (e?.message || "Check backend URL and connection.")); }
+    finally { setAiBusy(false); }
+  };
+  const askGlobalAI = async () => {
+    const q = aiQuery.trim(); if (!q) { setAiResult("Enter a question first."); return; }
+    if (!/^https?:\/\//i.test(aiEndpoint.trim())) { setAiResult("Set your Global AI backend URL below (for example https://your-server.example). No server is configured yet."); return; }
+    setAiBusy(true); setAiResult("Thinking…");
+    try { const response = await fetch(aiEndpoint.trim().replace(/\/$/, "") + "/api/ai/chat", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:[{role:"user",content:q}]})}); const data = await response.json(); if (!response.ok) throw new Error(data.detail || "AI unavailable"); setAiResult(data.answer || "No answer returned."); }
+    catch (e:any) { setAiResult("Global AI unavailable: " + (e?.message || "Check backend configuration.")); }
+    finally { setAiBusy(false); }
   };
   const newTab = () => {
     if (tabs.length >= 20) { setShowPanel("settings"); return; }
@@ -138,7 +159,7 @@ export default function Home() {
         <View style={s.aiModes}>
           {([{id:"all",label:"All-in-one"},{id:"search",label:"Search"},{id:"models",label:"AI models"},{id:"tools",label:"Browser tools"}] as const).map(m=><Pressable key={m.id} onPress={()=>setAiMode(m.id)} style={[s.aiMode,{backgroundColor:aiMode===m.id?"#6558f5":bg}]}><Text style={{color:aiMode===m.id?"white":fg,fontSize:11,fontWeight:"700"}}>{m.label}</Text></Pressable>)}
         </View>
-        <View style={[s.address,{backgroundColor:bg,borderColor:dark?"#29344e":"#e0e5ef",marginTop:12}]}><TextInput value={aiQuery} onChangeText={setAiQuery} onSubmitEditing={()=>{const q=aiQuery.trim();if(!q)return;const url="https://www.google.com/search?q="+encodeURIComponent(q);setInput(url);updateCurrent({url,title:q});setShowPanel("none");}} placeholder="Ask Global AI or research the web…" placeholderTextColor={muted} style={[s.input,{color:fg}]} returnKeyType="search"/></View>
+        <View style={[s.address,{backgroundColor:bg,borderColor:dark?"#29344e":"#e0e5ef",marginTop:12}]}><TextInput value={aiQuery} onChangeText={setAiQuery} onSubmitEditing={runGlobalSearch} placeholder="Ask Global AI or search the web…" placeholderTextColor={muted} style={[s.input,{color:fg}]} returnKeyType="search"/></View><Text style={[s.note,{color:muted,marginTop:10}]}>Global AI backend URL (set up your server first)</Text><View style={[s.address,{backgroundColor:bg,borderColor:dark?"#29344e":"#e0e5ef",marginTop:6}]}><TextInput value={aiEndpoint} onChangeText={setAiEndpoint} autoCapitalize="none" autoCorrect={false} placeholder="https://your-global-ai-server" placeholderTextColor={muted} style={[s.input,{color:fg}]} keyboardType="url"/></View><View style={s.aiModes}><Pressable accessibilityRole="button" onPress={runGlobalSearch} style={[s.aiMode,{backgroundColor:"#6558f5"}]}><Text style={{color:"white",fontWeight:"700"}}>{aiBusy?"Please wait…":"Search via Global AI"}</Text></Pressable><Pressable accessibilityRole="button" onPress={askGlobalAI} style={[s.aiMode,{backgroundColor:bg}]}><Text style={{color:fg,fontWeight:"700"}}>Ask AI</Text></Pressable></View>{aiResult ? <View style={s.item}><Text selectable style={[s.note,{color:fg}]}>{aiResult}</Text></View> : null}
         {aiMode==="all" || aiMode==="search" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Quick search</Text><View style={s.aiModes}>{([{label:"Google",url:"https://www.google.com/search?q="},{label:"Bing",url:"https://www.bing.com/search?q="},{label:"DuckDuckGo",url:"https://duckduckgo.com/?q="},{label:"Wikipedia",url:"https://en.wikipedia.org/wiki/Special:Search?search="}] as const).map(engine=><Pressable key={engine.label} accessibilityRole="button" onPress={()=>{const q=aiQuery.trim()||input;go(engine.url+encodeURIComponent(q));}} style={[s.aiMode,{backgroundColor:bg}]}><Text style={{color:fg,fontSize:11,fontWeight:"700"}}>{engine.label}</Text></Pressable>)}</View><Text style={[s.itemTitle,{color:fg,marginTop:12}]}>Multi-engine search</Text><Text style={[s.note,{color:muted}]}>Search providers can be routed through a self-hosted SearXNG gateway, which supports many upstream engines. Live engine availability depends on server configuration and upstream limits.</Text><Pressable onPress={()=>{const q=aiQuery.trim()||input;go("https://www.google.com/search?q="+encodeURIComponent(q));}}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Search the web ↗</Text></Pressable><Pressable onPress={()=>Linking.openURL("https://github.com/searxng/searxng")}><Text style={[s.quick,{color:fg,marginTop:8}]}>SearXNG integration project ↗</Text></Pressable></View>:null}
         {aiMode==="all" || aiMode==="models" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>AI model router</Text><Text style={[s.note,{color:muted}]}>Planned: choose an available model by task through configured provider APIs. No model API keys or model provider is connected by this UI yet.</Text><Pressable onPress={()=>Linking.openURL("https://models.dev/")}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Explore model catalog ↗</Text></Pressable></View>:null}
         {aiMode==="all" || aiMode==="tools" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Browser automation tools</Text><Text style={[s.note,{color:muted}]}>Planned: page reading, summarization, controlled navigation, and Playwright-based testing. Sensitive actions should require user approval.</Text><Pressable onPress={()=>Linking.openURL("https://playwright.dev/")}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Playwright documentation ↗</Text></Pressable></View>:null}
