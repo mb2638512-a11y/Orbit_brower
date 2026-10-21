@@ -1,47 +1,113 @@
 import React, { useRef, useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView } from "react-native";
 import { WebView } from "react-native-webview";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const HOME = "https://www.google.com";
+type Tab = { id: number; title: string; url: string };
 function toUrl(value: string) {
   const q = value.trim();
   if (!q) return HOME;
   if (/^https?:\/\//i.test(q)) return q;
-  if (/^[\w-]+\.[\w.-]+(?:\/.*)?$/.test(q) && !q.includes(" ")) return "https://" + q;
+  if (/^[\w-]+\.[\w.-]+(?::\d+)?(?:\/.*)?$/.test(q) && !q.includes(" ")) return "https://" + q;
   return "https://www.google.com/search?q=" + encodeURIComponent(q);
 }
 export default function Home() {
-  const [address, setAddress] = useState(HOME);
-  const [input, setInput] = useState(HOME);
   const [dark, setDark] = useState(true);
+  const [input, setInput] = useState(HOME);
+  const [tabs, setTabs] = useState<Tab[]>([{ id: 1, title: "New tab", url: HOME }]);
+  const [active, setActive] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showPanel, setShowPanel] = useState<"none" | "bookmarks" | "history" | "engines" | "settings">("none");
+  const [bookmarks, setBookmarks] = useState<Tab[]>([]);
+  const [history, setHistory] = useState<Tab[]>([]);
+  const [privateMode, setPrivateMode] = useState(false);
   const web = useRef<WebView>(null);
+  const current = tabs.find(t => t.id === active) || tabs[0];
   const bg = dark ? "#0b1020" : "#f4f6fb";
   const panel = dark ? "#151d31" : "#ffffff";
   const fg = dark ? "#f5f7ff" : "#10182b";
-  const go = () => { const url = toUrl(input); setAddress(url); setInput(url); Keyboard.dismiss(); };
+  const muted = dark ? "#9aa8c7" : "#667085";
+  const updateCurrent = (patch: Partial<Tab>) => setTabs(old => old.map(t => t.id === active ? { ...t, ...patch } : t));
+  const go = (raw = input) => {
+    const url = toUrl(raw);
+    updateCurrent({ url, title: url });
+    setInput(url);
+    setHistory(old => privateMode ? old : [{ id: Date.now(), title: url, url }, ...old.filter(h => h.url !== url)].slice(0, 100));
+    setShowPanel("none");
+    Keyboard.dismiss();
+  };
+  const newTab = () => {
+    const id = Date.now();
+    setTabs(old => [...old, { id, title: "New tab", url: HOME }]);
+    setActive(id); setInput(HOME); setShowPanel("none");
+  };
+  const closeTab = (id: number) => {
+    if (tabs.length === 1) { setTabs([{ id: Date.now(), title: "New tab", url: HOME }]); setInput(HOME); return; }
+    const remaining = tabs.filter(t => t.id !== id);
+    setTabs(remaining);
+    if (active === id) { const next = remaining[remaining.length - 1]; setActive(next.id); setInput(next.url); }
+  };
+  const addBookmark = () => {
+    if (!bookmarks.some(b => b.url === current.url)) setBookmarks(old => [{ ...current }, ...old]);
+    setShowPanel("bookmarks");
+  };
+  const navButton = (label: string, action: () => void, icon: string) => <Pressable accessibilityRole="button" onPress={action} style={[s.nav,{backgroundColor:panel}]}><Text style={[s.navIcon,{color:fg}]}>{icon}</Text><Text style={[s.navLabel,{color:fg}]}>{label}</Text></Pressable>;
   return <SafeAreaView style={[s.safe,{backgroundColor:bg}]}>
     <View style={s.top}>
-      <View style={s.brandRow}><View style={s.logo}><Text style={s.logoText}>O</Text></View><View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:dark?"#9aa8c7":"#667085"}]}>PRIVATE • FAST • SIMPLE</Text></View><View style={{flex:1}}/><Pressable onPress={()=>setDark(!dark)} style={[s.theme,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable></View>
+      <View style={s.brandRow}>
+        <View style={s.logo}><Text style={s.logoText}>O</Text></View>
+        <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>PRIVATE • FAST • SIMPLE</Text></View>
+        <View style={{flex:1}}/>
+        <Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
+        <Pressable accessibilityLabel="Toggle theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.tabs}>
+        {tabs.map(t=><Pressable key={t.id} onPress={()=>{setActive(t.id);setInput(t.url);setShowPanel("none")}} onLongPress={()=>closeTab(t.id)} style={[s.tab,{backgroundColor:t.id===active?"#6558f5":panel,borderColor:t.id===active?"#6558f5":(dark?"#29344e":"#e0e5ef")}]}><Text numberOfLines={1} style={{color:t.id===active?"white":fg,maxWidth:115,fontSize:12}}>{t.title==="New tab"?"New tab":t.title.replace(/^https?:\/\//,"").slice(0,22)}</Text><Text onPress={()=>closeTab(t.id)} style={{color:t.id===active?"white":muted,marginLeft:8}}>×</Text></Pressable>)}
+      </ScrollView>
       <View style={[s.address,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
         <Text style={{fontSize:16,color:"#7c8db2"}}>⌕</Text>
-        <TextInput value={input} onChangeText={setInput} onSubmitEditing={go} returnKeyType="go" autoCapitalize="none" autoCorrect={false} placeholder="Search or enter website" placeholderTextColor={dark?"#8490aa":"#8b95a7"} style={[s.input,{color:fg}]} />
-        <Pressable onPress={go} style={s.go}><Text style={{color:"white",fontWeight:"700"}}>GO</Text></Pressable>
+        <TextInput value={input} onChangeText={setInput} onSubmitEditing={()=>go()} returnKeyType="go" autoCapitalize="none" autoCorrect={false} placeholder="Search or enter website" placeholderTextColor={muted} style={[s.input,{color:fg}]}/>
+        <Pressable onPress={()=>go()} style={s.go}><Text style={{color:"white",fontWeight:"700"}}>GO</Text></Pressable>
+      </View>
+      <View style={s.quickRow}>
+        <Text style={[s.engine,{color:muted}]}>{Platform.OS==="ios"?"WebKit engine":Platform.OS==="android"?"Android System WebView":"Browser engine"}</Text>
+        <Pressable onPress={addBookmark}><Text style={[s.quick,{color:fg}]}>☆ Save</Text></Pressable>
+        <Pressable onPress={()=>setShowPanel(showPanel==="engines"?"none":"engines")}><Text style={[s.quick,{color:fg}]}>⚙ Engines</Text></Pressable>
+        <Pressable onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.quick,{color:privateMode?"#a78bfa":fg}]}>{privateMode?"◉ Private ON":"◉ Private"}</Text></Pressable>
       </View>
     </View>
-    <View style={s.webWrap}><WebView ref={web} source={{uri:address}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{setAddress(e.url);setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>
+    {showPanel!=="none" ? <View style={[s.panel,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
+      <View style={s.panelHeader}><Text style={[s.panelTitle,{color:fg}]}>{showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":showPanel==="engines"?"Available engines":"Browser settings"}</Text><Pressable onPress={()=>setShowPanel("none")}><Text style={{color:muted,fontSize:20}}>×</Text></Pressable></View>
+      {showPanel==="engines" ? <>
+        <Text style={[s.note,{color:muted}]}>Engine support depends on the operating system. Orbit cannot switch rendering engines unless the native engine is bundled and integrated.</Text>
+        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Android System WebView</Text><Text style={[s.note,{color:muted}]}>Current Android renderer</Text></View>
+        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Apple WebKit</Text><Text style={[s.note,{color:muted}]}>iOS renderer; required platform engine</Text></View>
+        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Chromium / Electron</Text><Text style={[s.note,{color:muted}]}>Desktop shell renderer</Text></View>
+        <View style={s.item}><Text style={[s.itemTitle,{color:muted}]}>Firefox Gecko</Text><Text style={[s.note,{color:muted}]}>Not integrated yet — not selectable</Text></View>
+      </> : showPanel==="bookmarks" || showPanel==="history" ? (showPanel==="bookmarks"?bookmarks:history).length===0 ? <Text style={[s.note,{color:muted}]}>Nothing saved yet.</Text> : (showPanel==="bookmarks"?bookmarks:history).map((item,i)=><Pressable key={item.url+i} onPress={()=>go(item.url)} style={s.item}><Text numberOfLines={1} style={[s.itemTitle,{color:fg}]}>{item.title}</Text><Text numberOfLines={1} style={[s.note,{color:muted}]}>{item.url}</Text></Pressable>) : <>
+        <Pressable style={s.item} onPress={()=>setDark(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Appearance: {dark?"Dark":"Light"}</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Private mode: {privateMode?"On":"Off"}</Text><Text style={[s.note,{color:muted}]}>Stops Orbit's in-memory history list from recording new visits. Websites and OS-level logging may still retain data.</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>setHistory([])}><Text style={[s.itemTitle,{color:fg}]}>Clear Orbit history</Text></Pressable>
+      </>}
+    </View> : <View style={s.webWrap}><WebView key={active} ref={web} source={{uri:current.url}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{updateCurrent({url:e.url,title:e.title||e.url});setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>}
     <View style={[s.bottom,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
-      <Pressable onPress={()=>web.current?.goBack()} style={s.nav}><Text style={[s.navIcon,{color:fg}]}>‹</Text><Text style={[s.navLabel,{color:fg}]}>Back</Text></Pressable>
-      <Pressable onPress={()=>web.current?.goForward()} style={s.nav}><Text style={[s.navIcon,{color:fg}]}>›</Text><Text style={[s.navLabel,{color:fg}]}>Forward</Text></Pressable>
-      <Pressable onPress={()=>{setAddress(HOME);setInput(HOME)}} style={s.nav}><Text style={[s.navIcon,{color:fg}]}>⌂</Text><Text style={[s.navLabel,{color:fg}]}>Home</Text></Pressable>
-      <Pressable onPress={()=>web.current?.reload()} style={s.nav}><Text style={[s.navIcon,{color:fg}]}>{loading?"◌":"↻"}</Text><Text style={[s.navLabel,{color:fg}]}>Reload</Text></Pressable>
+      {navButton("Back",()=>web.current?.goBack(),"‹")}
+      {navButton("Forward",()=>web.current?.goForward(),"›")}
+      {navButton("Home",()=>go(HOME),"⌂")}
+      {navButton(loading?"Loading":"Reload",()=>web.current?.reload(),loading?"◌":"↻")}
+      {navButton("Saved",()=>setShowPanel(showPanel==="bookmarks"?"none":"bookmarks"),"☆")}
+      {navButton("History",()=>setShowPanel(showPanel==="history"?"none":"history"),"◷")}
     </View>
+    <Text style={[s.footer,{color:muted}]}>Hold a tab to close it • {tabs.length} tab{tabs.length===1?"":"s"} • {privateMode?"Private mode":"Standard mode"}</Text>
   </SafeAreaView>;
 }
 const s=StyleSheet.create({
- safe:{flex:1},top:{paddingHorizontal:16,paddingTop:8,paddingBottom:12,gap:14},
- brandRow:{flexDirection:"row",alignItems:"center",gap:10},logo:{width:42,height:42,borderRadius:14,backgroundColor:"#6558f5",alignItems:"center",justifyContent:"center"},logoText:{fontSize:24,color:"white",fontWeight:"900"},brand:{fontSize:18,fontWeight:"900",letterSpacing:2},sub:{fontSize:9,letterSpacing:1.5,marginTop:2},theme:{width:42,height:42,borderRadius:14,alignItems:"center",justifyContent:"center"},
- address:{height:52,borderWidth:1,borderRadius:17,paddingLeft:14,paddingRight:5,flexDirection:"row",alignItems:"center",gap:9},input:{flex:1,fontSize:14,height:"100%"},go:{backgroundColor:"#6558f5",paddingHorizontal:15,paddingVertical:11,borderRadius:12},
- webWrap:{flex:1,overflow:"hidden"},bottom:{minHeight:66,borderTopWidth:1,flexDirection:"row",alignItems:"center",justifyContent:"space-around",paddingBottom:4},nav:{alignItems:"center",justifyContent:"center",minWidth:58,paddingVertical:4},navIcon:{fontSize:26,lineHeight:29},navLabel:{fontSize:10,fontWeight:"600"}
+ safe:{flex:1},top:{paddingHorizontal:14,paddingTop:6,paddingBottom:8,gap:10},
+ brandRow:{flexDirection:"row",alignItems:"center",gap:10},logo:{width:40,height:40,borderRadius:13,backgroundColor:"#6558f5",alignItems:"center",justifyContent:"center"},logoText:{fontSize:23,color:"white",fontWeight:"900"},brand:{fontSize:17,fontWeight:"900",letterSpacing:2},sub:{fontSize:8,letterSpacing:1.2,marginTop:2},square:{width:38,height:38,borderRadius:12,alignItems:"center",justifyContent:"center"},
+ tabs:{gap:7,paddingVertical:1},tab:{minHeight:34,borderWidth:1,borderRadius:11,paddingHorizontal:10,flexDirection:"row",alignItems:"center",justifyContent:"space-between"},
+ address:{height:49,borderWidth:1,borderRadius:15,paddingLeft:12,paddingRight:5,flexDirection:"row",alignItems:"center",gap:8},input:{flex:1,fontSize:13,height:"100%"},go:{backgroundColor:"#6558f5",paddingHorizontal:14,paddingVertical:10,borderRadius:11},
+ quickRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",gap:8},engine:{fontSize:10,flex:1},quick:{fontSize:11,fontWeight:"700"},
+ webWrap:{flex:1,overflow:"hidden"},bottom:{minHeight:60,borderTopWidth:1,flexDirection:"row",alignItems:"center",justifyContent:"space-around",paddingHorizontal:1,paddingBottom:2},nav:{alignItems:"center",justifyContent:"center",minWidth:48,paddingHorizontal:2,paddingVertical:4,borderRadius:10},navIcon:{fontSize:23,lineHeight:26},navLabel:{fontSize:9,fontWeight:"600"},
+ panel:{flex:1,marginHorizontal:12,marginBottom:6,borderWidth:1,borderRadius:16,padding:14},panelHeader:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:12},panelTitle:{fontSize:16,fontWeight:"800"},note:{fontSize:12,lineHeight:18},item:{paddingVertical:11,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"#64748b44"},itemTitle:{fontSize:13,fontWeight:"700"},footer:{textAlign:"center",fontSize:9,paddingVertical:3}
 });
