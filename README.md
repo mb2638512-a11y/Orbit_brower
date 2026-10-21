@@ -1,15 +1,18 @@
 # Orbit Browser
 
-Expo / React Native mobile prototype plus experimental desktop shells.
+Experimental Orbit Browser prototype with mobile and desktop build workflows. Use the `platform-builds` branch; `main` remains separate.
 
-## Build outputs
-- Android APK: `Build Orbit Browser Android APK`
-- iOS Simulator app: `Build Orbit Browser iOS Simulator` (not a signed iPhone IPA)
-- Windows x64 installer: `Build Orbit Browser Windows and Linux`
-- Linux x64 AppImage: `Build Orbit Browser Windows and Linux`
-- macOS DMG: `Build Orbit Browser macOS` (Apple Silicon and Intel build jobs)
+## Download options by device
+- **Android phones/tablets:** `builds/android` — debug APK for testing.
+- **Windows 10/11 x64 laptops/PCs:** `builds/windows` — EXE installer.
+- **Linux x86_64:** `builds/linux` — AppImage.
+- **Mac Apple Silicon:** `builds/macos` — arm64 DMG.
+- **Mac Intel:** `builds/macos` — x64 DMG.
+- **iPhone/iPad:** `builds/ios` — current artifact is simulator-only; real device install requires signed IPA/TestFlight.
+- **Android ARM / Windows ARM / Linux ARM:** not currently built.
 
-Use GitHub → Actions to inspect builds and download their artifacts. The `builds/android`, `builds/ios`, `builds/windows`, `builds/linux`, and `builds/macos` folders document platform outputs; generated binaries are stored as Actions artifacts, not committed into Git.
+## How to download
+Open GitHub → Actions → select a successful platform workflow run → download its matching artifact at the bottom of the run page. Artifacts are temporary and retained for 14 days. Do not use a build until its workflow is green.
 
-## Important limitations
-The desktop version is an experimental Electron shell using an embedded web frame. It is not yet a production-grade Chromium browser. Some websites block embedding; a hardened production browser should use a maintained browser engine and stricter origin isolation. macOS builds are unsigned unless signing credentials are configured and may show Gatekeeper warnings. Signed iOS distribution requires Apple credentials.
+## Limitations
+This is an early browser-shell prototype, not a production-grade Chromium browser. Website embedding restrictions, browser security, privacy isolation, tabs, bookmarks, extensions, and release signing still need further work. Windows/macOS installers are unsigned; Android APK is debug-signed.
