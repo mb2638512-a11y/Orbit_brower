@@ -38,7 +38,7 @@ jobs:
         env:
           ELECTRON_DISABLE_SANDBOX: 1
       - name: Build Linux AppImage
-        run: npm --prefix desktop exec -- electron-builder -- --linux AppImage --${{ matrix.arch }}
+        run: npm --prefix desktop exec -- electron-builder --linux AppImage --${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
           name: Orbit-Browser-Linux-${{ matrix.arch }}-AppImage
