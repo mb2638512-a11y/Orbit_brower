@@ -36,7 +36,7 @@ jobs:
           name: Orbit-Browser-macOS-${{ matrix.arch }}
           path: desktop/dist/*.dmg
           if-no-files-found: error
-          retention-days: 365
+          retention-days: 90
       - name: Publish persistent GitHub Release download
         uses: softprops/action-gh-release@v2
         with:
