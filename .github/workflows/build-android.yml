@@ -42,8 +42,8 @@ jobs:
         run: mkdir -p builds/android && cp android/app/build/outputs/apk/release/app-release.apk builds/android/Orbit-Browser-Android.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: Orbit-Browser-Android-debug-APK
-          path: builds/android/Orbit-Browser-Android-debug.apk
+          name: Orbit-Browser-Android-Standalone-APK
+          path: builds/android/Orbit-Browser-Android.apk
           if-no-files-found: error
           retention-days: 90
       - name: Publish persistent GitHub Release download
@@ -54,4 +54,4 @@ jobs:
           prerelease: true
           make_latest: false
           overwrite_files: true
-          files: builds/android/Orbit-Browser-Android-debug.apk
+          files: builds/android/Orbit-Browser-Android.apk
