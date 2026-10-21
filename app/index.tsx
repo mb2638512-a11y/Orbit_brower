@@ -65,6 +65,7 @@ export default function Home() {
     Keyboard.dismiss();
   };
   const newTab = () => {
+    if (tabs.length >= 20) { setShowPanel("settings"); return; }
     const id = Date.now();
     setTabs(old => [...old, { id, title: "New tab", url: HOME }]);
     setActive(id); setInput(HOME); setShowPanel("none");
@@ -87,15 +88,15 @@ export default function Home() {
         <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>PRIVATE • FAST • SIMPLE</Text></View>
         <View style={{flex:1}}/>
         <Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
-        <Pressable accessibilityLabel="Toggle theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Toggle light or dark theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.tabs}>
         {tabs.map(t=><Pressable key={t.id} onPress={()=>{setActive(t.id);setInput(t.url);setShowPanel("none")}} onLongPress={()=>closeTab(t.id)} style={[s.tab,{backgroundColor:t.id===active?"#6558f5":panel,borderColor:t.id===active?"#6558f5":(dark?"#29344e":"#e0e5ef")}]}><Text numberOfLines={1} style={{color:t.id===active?"white":fg,maxWidth:115,fontSize:12}}>{t.title==="New tab"?"New tab":t.title.replace(/^https?:\/\//,"").slice(0,22)}</Text><Text onPress={()=>closeTab(t.id)} style={{color:t.id===active?"white":muted,marginLeft:8}}>×</Text></Pressable>)}
       </ScrollView>
       <View style={[s.address,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
         <Text style={{fontSize:16,color:"#7c8db2"}}>⌕</Text>
-        <TextInput value={input} onChangeText={setInput} onSubmitEditing={()=>go()} returnKeyType="go" autoCapitalize="none" autoCorrect={false} placeholder="Search or enter website" placeholderTextColor={muted} style={[s.input,{color:fg}]}/>
-        <Pressable onPress={()=>go()} style={s.go}><Text style={{color:"white",fontWeight:"700"}}>GO</Text></Pressable>
+        <TextInput accessibilityLabel="Address and web search" value={input} onChangeText={setInput} onSubmitEditing={()=>go()} returnKeyType="go" autoCapitalize="none" autoCorrect={false} placeholder="Search or enter website" placeholderTextColor={muted} style={[s.input,{color:fg}]}/>
+        <Pressable accessibilityRole="button" accessibilityLabel="Go to website or search" onPress={()=>go()} style={s.go}><Text style={{color:"white",fontWeight:"700"}}>GO</Text></Pressable>
       </View>
       <View style={s.quickRow}>
         <Text style={[s.engine,{color:muted}]}>{Platform.OS==="ios"?"WebKit engine":Platform.OS==="android"?"Android System WebView":"Browser engine"}</Text>
@@ -107,19 +108,21 @@ export default function Home() {
       </View>
     </View>
     {showPanel!=="none" ? <View style={[s.panel,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
-      <View style={s.panelHeader}><Text style={[s.panelTitle,{color:fg}]}>{showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":showPanel==="engines"?"Available engines":"Browser settings"}</Text><Pressable onPress={()=>setShowPanel("none")}><Text style={{color:muted,fontSize:20}}>×</Text></Pressable></View>
+      <View style={s.panelHeader}><Text style={[s.panelTitle,{color:fg}]}>{showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":showPanel==="engines"?"Available engines":showPanel==="globalai"?"Global AI":showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":"Browser settings"}</Text><Pressable onPress={()=>setShowPanel("none")}><Text style={{color:muted,fontSize:20}}>×</Text></Pressable></View>
       {showPanel==="globalai" ? <ScrollView keyboardShouldPersistTaps="handled">
         <Text style={[s.note,{color:muted}]}>One hub for multi-engine search, AI model routing, and browser tools. Live provider access requires configured integrations; this panel does not claim 80+ providers are already connected.</Text>
         <View style={s.aiModes}>
           {([{id:"all",label:"All-in-one"},{id:"search",label:"Search"},{id:"models",label:"AI models"},{id:"tools",label:"Browser tools"}] as const).map(m=><Pressable key={m.id} onPress={()=>setAiMode(m.id)} style={[s.aiMode,{backgroundColor:aiMode===m.id?"#6558f5":bg}]}><Text style={{color:aiMode===m.id?"white":fg,fontSize:11,fontWeight:"700"}}>{m.label}</Text></Pressable>)}
         </View>
         <View style={[s.address,{backgroundColor:bg,borderColor:dark?"#29344e":"#e0e5ef",marginTop:12}]}><TextInput value={aiQuery} onChangeText={setAiQuery} onSubmitEditing={()=>{const q=aiQuery.trim();if(!q)return;const url="https://www.google.com/search?q="+encodeURIComponent(q);setInput(url);updateCurrent({url,title:q});setShowPanel("none");}} placeholder="Ask Global AI or research the web…" placeholderTextColor={muted} style={[s.input,{color:fg}]} returnKeyType="search"/></View>
-        {aiMode==="all" || aiMode==="search" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Multi-engine search</Text><Text style={[s.note,{color:muted}]}>Search providers can be routed through a self-hosted SearXNG gateway, which supports many upstream engines. Live engine availability depends on server configuration and upstream limits.</Text><Pressable onPress={()=>{const q=aiQuery.trim()||input;go("https://www.google.com/search?q="+encodeURIComponent(q));}}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Search the web ↗</Text></Pressable><Pressable onPress={()=>Linking.openURL("https://github.com/searxng/searxng")}><Text style={[s.quick,{color:fg,marginTop:8}]}>SearXNG integration project ↗</Text></Pressable></View>:null}
+        {aiMode==="all" || aiMode==="search" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Quick search</Text><View style={s.aiModes}>{([{label:"Google",url:"https://www.google.com/search?q="},{label:"Bing",url:"https://www.bing.com/search?q="},{label:"DuckDuckGo",url:"https://duckduckgo.com/?q="},{label:"Wikipedia",url:"https://en.wikipedia.org/wiki/Special:Search?search="}] as const).map(engine=><Pressable key={engine.label} accessibilityRole="button" onPress={()=>{const q=aiQuery.trim()||input;go(engine.url+encodeURIComponent(q));}} style={[s.aiMode,{backgroundColor:bg}]}><Text style={{color:fg,fontSize:11,fontWeight:"700"}}>{engine.label}</Text></Pressable>)}</View><Text style={[s.itemTitle,{color:fg,marginTop:12}]}>Multi-engine search</Text><Text style={[s.note,{color:muted}]}>Search providers can be routed through a self-hosted SearXNG gateway, which supports many upstream engines. Live engine availability depends on server configuration and upstream limits.</Text><Pressable onPress={()=>{const q=aiQuery.trim()||input;go("https://www.google.com/search?q="+encodeURIComponent(q));}}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Search the web ↗</Text></Pressable><Pressable onPress={()=>Linking.openURL("https://github.com/searxng/searxng")}><Text style={[s.quick,{color:fg,marginTop:8}]}>SearXNG integration project ↗</Text></Pressable></View>:null}
         {aiMode==="all" || aiMode==="models" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>AI model router</Text><Text style={[s.note,{color:muted}]}>Planned: choose an available model by task through configured provider APIs. No model API keys or model provider is connected by this UI yet.</Text><Pressable onPress={()=>Linking.openURL("https://models.dev/")}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Explore model catalog ↗</Text></Pressable></View>:null}
         {aiMode==="all" || aiMode==="tools" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Browser automation tools</Text><Text style={[s.note,{color:muted}]}>Planned: page reading, summarization, controlled navigation, and Playwright-based testing. Sensitive actions should require user approval.</Text><Pressable onPress={()=>Linking.openURL("https://playwright.dev/")}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Playwright documentation ↗</Text></Pressable></View>:null}
+        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Privacy & safety</Text><Text style={[s.note,{color:muted}]}>Do not enter passwords, payment details, or private data into an untrusted AI provider. Provider requests will need clear privacy controls before live AI connections are enabled.</Text></View>
         <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Connection status</Text><Text style={[s.note,{color:muted}]}>Prototype hub • web search shortcut works • model routing and browser automation still need backend integration and testing.</Text></View>
       </ScrollView> : showPanel==="settings" ? <>
         <Text style={[s.note,{color:muted}]}>{updateStatus}</Text>
+        <Text style={[s.note,{color:muted,marginTop:10}]}>Usability: up to 20 tabs per session; bookmarks and history currently reset when Orbit restarts.</Text>
         <Pressable style={s.item} onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.itemTitle,{color:fg}]}>Open platform downloads ↗</Text><Text style={[s.note,{color:muted}]}>Orbit checks GitHub releases when the app starts. Installation may still require your OS or app store approval.</Text></Pressable>
         <Pressable style={s.item} onPress={()=>{setUpdateStatus("Checking for updates…"); Linking.openURL("https://github.com/mb2638512-a11y/Orbit_brower/actions")}}><Text style={[s.itemTitle,{color:fg}]}>Build status and updates</Text></Pressable>
       </> : showPanel==="engines" ? <>
@@ -132,7 +135,8 @@ export default function Home() {
         <Pressable style={s.item} onPress={()=>setDark(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Appearance: {dark?"Dark":"Light"}</Text></Pressable>
         <Pressable style={s.item} onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Private mode: {privateMode?"On":"Off"}</Text><Text style={[s.note,{color:muted}]}>Stops Orbit's in-memory history list from recording new visits. Websites and OS-level logging may still retain data.</Text></Pressable>
         <Pressable style={s.item} onPress={()=>setShowPanel("settings")}><Text style={[s.itemTitle,{color:fg}]}>Updates & downloads</Text><Text style={[s.note,{color:muted}]}>{updateStatus}</Text></Pressable>
-        <Pressable style={s.item} onPress={()=>setHistory([])}><Text style={[s.itemTitle,{color:fg}]}>Clear Orbit history</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>{setHistory([]);setShowPanel("history");}}><Text style={[s.itemTitle,{color:fg}]}>Clear Orbit history</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>{setTabs([{id:Date.now(),title:"New tab",url:HOME}]);setActive(Date.now());setInput(HOME);setShowPanel("none");}}><Text style={[s.itemTitle,{color:fg}]}>Reset tabs</Text><Text style={[s.note,{color:muted}]}>Close current tabs and start fresh</Text></Pressable>
       </>}
     </View> : <View style={s.webWrap}><WebView key={active} ref={web} source={{uri:current.url}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{updateCurrent({url:e.url,title:e.title||e.url});setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>}
     <View style={[s.bottom,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
