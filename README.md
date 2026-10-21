@@ -17,6 +17,10 @@
 
 A release page will show its file under **Assets** after its build and publishing workflow succeeds.
 
+## Usability improvements
+
+The mobile UI now offers quick search shortcuts in Global AI, clearer panel labels, accessible address controls, and a 20-tab session limit. The desktop shell adds Google, Bing, DuckDuckGo and Wikipedia quick-search shortcuts, responsive navigation, and Ctrl/Cmd+L to focus the address bar. These are UI-level improvements and still require successful platform builds and manual device testing. Bookmarks/history remain in-memory and do not persist after restart.
+
 ## Global AI — initial prototype
 
 The mobile and desktop interfaces now include a Global AI hub with three areas: multi-engine search, AI model routing, and browser automation tools. The current search button opens a Google search shortcut; the UI links to SearXNG, Models.dev, and Playwright as implementation references. **This is not yet a connected 80+ engine AI service:** SearXNG must be deployed/configured, model provider APIs and server-side secrets must be added, and browser tools must be implemented and security-tested. Engine counts vary by configuration and upstream availability. Never expose provider API keys in the app client.
