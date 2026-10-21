@@ -56,6 +56,21 @@ The engine panel reports platform engine availability; it does not download or s
 
 GitHub Actions artifacts are temporary (configured for 90 days). Release assets are the persistent download locations.
 
+## Global AI backend (new)
+
+A self-hosted API and SearXNG compose stack are in `global-ai/`. The API exposes `/health`, `/api/providers`, `/api/search?q=...`, and `/api/ai/chat`. Search aggregates whichever upstream engines are enabled and working in the configured SearXNG instance; it does not guarantee 80+ live engines. Chat uses an OpenAI-compatible provider configured on the server. API keys must remain server-side and must never be added to the mobile app, desktop renderer, or repository.
+
+### Deploy (self-hosted server required)
+
+1. Install Docker Engine and Docker Compose on a Linux server.
+2. In `global-ai/`, copy `.env.example` to `.env` and configure `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, `CORS_ORIGINS`, and `SEARXNG_URL=http://searxng:8080`.
+3. Generate a SearXNG secret with `openssl rand -hex 32` and replace the placeholder in `searxng-settings.yml` before first launch. Keep `.env` private; never commit real credentials.
+4. Run `docker compose up -d --build` from `global-ai/`. The API is bound to `127.0.0.1:8082`; put it behind HTTPS with a reverse proxy before connecting phones or remote devices. Do not expose it directly to the public internet without TLS, authentication, abuse protection, and monitoring.
+5. Open `/health` and `/api/providers` on the configured API URL. Enter that URL in Orbit Global AI settings. AI chat needs a paid/free compatible provider endpoint and valid server-side credentials; search needs reachable configured SearXNG engines.
+6. CI tests validate configuration/error paths. Real upstream search, model responses, mobile networking, and production security still need deployment/device testing.
+
+SearXNG's JSON API requires `json` to be enabled in `search.formats`; this repository's settings file enables it. See the [official SearXNG Search API docs](https://docs.searxng.org/dev/search_api.html).
+
 ## Known limitations
 
 Orbit Browser is still an early browser-shell prototype, not a production-grade browser. The desktop renderer currently uses an iframe and some websites block embedding; a production desktop build needs a native browser surface, stronger navigation controls, download handling, permission controls, persisted data, security review, and signed release builds.
