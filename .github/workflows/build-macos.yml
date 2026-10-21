@@ -49,6 +49,7 @@ jobs:
           prerelease: true
           make_latest: false
           overwrite_files: true
+          files: desktop/dist/*.dmg
       - name: Delete stale assets from this macOS architecture release
         uses: actions/github-script@v7
         env:
@@ -66,4 +67,3 @@ jobs:
                 core.info('Deleted stale macOS asset: ' + asset.name);
               }
             }
-          files: desktop/dist/*.dmg
