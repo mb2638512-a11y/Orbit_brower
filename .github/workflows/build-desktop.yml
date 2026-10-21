@@ -65,6 +65,8 @@ jobs:
         run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install --include=dev
       - name: Verify Electron installation
         run: npm --prefix desktop exec -- electron --version
+        env:
+          ELECTRON_DISABLE_SANDBOX: 1
       - name: Build Linux AppImage
         run: npm --prefix desktop exec -- electron-builder --linux AppImage --x64
       - uses: actions/upload-artifact@v4
