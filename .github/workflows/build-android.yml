@@ -40,7 +40,7 @@ jobs:
           name: Orbit-Browser-Android-debug-APK
           path: builds/android/Orbit-Browser-Android-debug.apk
           if-no-files-found: error
-          retention-days: 365
+          retention-days: 90
       - name: Publish persistent GitHub Release download
         uses: softprops/action-gh-release@v2
         with:
