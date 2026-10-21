@@ -36,9 +36,11 @@ jobs:
           Copy-Item dist/* desktop/renderer/ -Recurse -Force
           npm --prefix desktop install --include=dev
       - name: Verify Electron installation
-        run: npm --prefix desktop exec -- electron --version
+        working-directory: desktop
+        run: npx electron --version
       - name: Build Windows installer
-        run: npm --prefix desktop exec -- electron-builder --win nsis --${{ matrix.arch }}
+        working-directory: desktop
+        run: npx electron-builder --win nsis --${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
           name: Orbit-Browser-Windows-${{ matrix.arch }}-Installer
