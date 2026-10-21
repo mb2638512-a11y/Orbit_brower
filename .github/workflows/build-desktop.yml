@@ -1,4 +1,4 @@
-name: Build Orbit Browser Windows and Linux
+name: Build Orbit Browser Linux
 on:
   workflow_dispatch:
   push:
@@ -12,48 +12,6 @@ on:
 permissions:
   contents: write
 jobs:
-  build-windows:
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [x64, arm64]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install Expo app dependencies
-        run: npm install --legacy-peer-deps
-      - name: Install Expo web dependencies
-        run: npx expo install react-dom react-native-web expo-linking expo-constants expo-font
-      - name: Export web app
-        run: npx expo export --platform web
-      - name: Prepare desktop package
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force desktop/renderer | Out-Null
-          Copy-Item dist/* desktop/renderer/ -Recurse -Force
-          npm --prefix desktop install --include=dev
-      - name: Verify Electron installation
-        run: npm --prefix desktop exec -- electron --version
-      - name: Build Windows installer
-        run: npm --prefix desktop exec -- electron-builder -- --win nsis --${{ matrix.arch }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Orbit-Browser-Windows-${{ matrix.arch }}-Installer
-          path: desktop/dist/*.exe
-          if-no-files-found: error
-          retention-days: 90
-      - name: Publish persistent GitHub Release download
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: orbit-browser-windows-${{ matrix.arch }}-latest
-          name: Orbit Browser Windows ${{ matrix.arch }} (latest)
-          prerelease: true
-          make_latest: false
-          overwrite_files: true
-          files: desktop/dist/*.exe
   build-linux:
     runs-on: ${{ matrix.runner }}
     strategy:
