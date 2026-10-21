@@ -19,7 +19,7 @@ A release page will show its file under **Assets** after its build and publishin
 
 ## Usability improvements
 
-The mobile UI now offers quick search shortcuts in Global AI, clearer panel labels, accessible address controls, and a 20-tab session limit. The desktop shell adds Google, Bing, DuckDuckGo and Wikipedia quick-search shortcuts, responsive navigation, and Ctrl/Cmd+L to focus the address bar. These are UI-level improvements and still require successful platform builds and manual device testing. Bookmarks/history remain in-memory and do not persist after restart.
+The mobile UI now offers quick search shortcuts in Global AI, a selectable default search provider, clearer panel labels, accessible address controls, a 20-tab session limit, and persistent bookmarks/history/search preference via local storage. The desktop shell adds Google, Bing, DuckDuckGo and Wikipedia quick-search shortcuts, responsive navigation, Ctrl/Cmd+L to focus the address bar, persistent bookmarks/history, and a clear-data action. The mobile WebView forwards supported download links to the device handler. These changes require successful platform builds and manual device testing; the download path is not a built-in download manager.
 
 ## Global AI — initial prototype
 
@@ -31,7 +31,7 @@ The mobile UI checks the relevant GitHub release when it starts and provides an 
 
 ## Current UI features
 
-The mobile UI includes tab switching/closing, address/search bar, back/forward/reload/home, in-memory bookmarks and history, dark/light theme, and a private-mode toggle that stops Orbit's own history list from recording new visits. These are prototype features; bookmarks/settings are not yet persisted across app restarts, and private mode does not prevent websites, the operating system, DNS providers, or network operators from logging activity.
+The mobile UI includes tab switching/closing, address/search bar, back/forward/reload/home, locally persisted bookmarks/history/search preference, dark/light theme, and a private-mode toggle that stops Orbit's own history list from recording new visits. Clear browsing data clears saved Orbit records and WebView cache where supported. This is not full private browsing: websites, the operating system, DNS providers, and network operators may still log activity. Desktop bookmarks/history persist locally and a clear-data control removes Orbit local records, but does not remove server logs or downloaded files.
 
 ## Engine support — read before relying on it
 
