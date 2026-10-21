@@ -2,7 +2,7 @@ name: Build Orbit Browser iOS Simulator
 on:
   workflow_dispatch:
   push:
-    branches: [main, platform-builds]
+    branches: [build/ios]
     paths:
       - 'app/**'
       - '.github/workflows/build-ios.yml'
