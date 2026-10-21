@@ -7,3 +7,6 @@ document.getElementById("back").onclick=()=>{if(index>0){index--;go(historyList[
 document.getElementById("forward").onclick=()=>{if(index<historyList.length-1){index++;go(historyList[index],false)}};
 document.getElementById("home").onclick=()=>{frame.style.display="none";welcome.style.display="block";input.value=""};
 document.getElementById("reload").onclick=()=>{try{frame.contentWindow.location.reload()}catch{frame.src=frame.src}};
+
+// Update entry point: open Orbit release downloads so users can select the build for their OS.
+document.getElementById("updates").addEventListener("click",()=>{ window.open("https://github.com/mb2638512-a11y/Orbit_brower/releases","_blank","noopener,noreferrer"); });
