@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const HOME = "https://www.google.com";
@@ -24,6 +25,9 @@ export default function Home() {
   const [aiMode, setAiMode] = useState<"all" | "search" | "models" | "tools">("all");
   const [bookmarks, setBookmarks] = useState<Tab[]>([]);
   const [history, setHistory] = useState<Tab[]>([]);
+  const [storageReady, setStorageReady] = useState(false);
+  const [searchProvider, setSearchProvider] = useState<"google"|"bing"|"duckduckgo"|"brave"|"wikipedia">("google");
+  const [downloadsHelp, setDownloadsHelp] = useState("");
   const [privateMode, setPrivateMode] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("Checking for updates…");
   const [updateUrl, setUpdateUrl] = useState("https://github.com/mb2638512-a11y/Orbit_brower/releases");
@@ -49,6 +53,24 @@ export default function Home() {
       .catch(() => { if (alive) setUpdateStatus("Could not check updates right now. You can open the releases page manually."); });
     return () => { alive = false; };
   }, []);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1"]);
+        if (!alive) return;
+        const stored = Object.fromEntries(values);
+        if (stored["orbit.bookmarks.v1"]) setBookmarks(JSON.parse(stored["orbit.bookmarks.v1"]));
+        if (stored["orbit.history.v1"]) setHistory(JSON.parse(stored["orbit.history.v1"]));
+        if (stored["orbit.searchProvider.v1"] && ["google","bing","duckduckgo","brave","wikipedia"].includes(stored["orbit.searchProvider.v1"]!)) setSearchProvider(stored["orbit.searchProvider.v1"] as typeof searchProvider);
+      } catch { /* storage may be unavailable on a device; browser remains usable */ }
+      finally { if (alive) setStorageReady(true); }
+    })();
+    return () => { alive = false; };
+  }, []);
+  useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.bookmarks.v1", JSON.stringify(bookmarks)).catch(()=>{}); }, [bookmarks,storageReady]);
+  useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.history.v1", JSON.stringify(history.slice(0,100))).catch(()=>{}); }, [history,storageReady]);
+  useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.searchProvider.v1", searchProvider).catch(()=>{}); }, [searchProvider,storageReady]);
   const web = useRef<WebView>(null);
   const current = tabs.find(t => t.id === active) || tabs[0];
   const bg = dark ? "#0b1020" : "#f4f6fb";
@@ -57,7 +79,9 @@ export default function Home() {
   const muted = dark ? "#9aa8c7" : "#667085";
   const updateCurrent = (patch: Partial<Tab>) => setTabs(old => old.map(t => t.id === active ? { ...t, ...patch } : t));
   const go = (raw = input) => {
-    const url = toUrl(raw);
+    const trimmed = raw.trim();
+    const engines = {google:"https://www.google.com/search?q=",bing:"https://www.bing.com/search?q=",duckduckgo:"https://duckduckgo.com/?q=",brave:"https://search.brave.com/search?q=",wikipedia:"https://en.wikipedia.org/wiki/Special:Search?search="};
+    const url = trimmed && !/^https?:\/\//i.test(trimmed) && !/^[\w-]+\.[\w.-]+(?::\d+)?(?:\/.*)?$/.test(trimmed) && !trimmed.includes("://") ? engines[searchProvider] + encodeURIComponent(trimmed) : toUrl(raw);
     updateCurrent({ url, title: url });
     setInput(url);
     setHistory(old => privateMode ? old : [{ id: Date.now(), title: url, url }, ...old.filter(h => h.url !== url)].slice(0, 100));
@@ -132,10 +156,13 @@ export default function Home() {
         <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Chromium / Electron</Text><Text style={[s.note,{color:muted}]}>Desktop shell renderer</Text></View>
         <View style={s.item}><Text style={[s.itemTitle,{color:muted}]}>Firefox Gecko</Text><Text style={[s.note,{color:muted}]}>Not integrated yet — not selectable</Text></View>
       </> : showPanel==="bookmarks" || showPanel==="history" ? (showPanel==="bookmarks"?bookmarks:history).length===0 ? <Text style={[s.note,{color:muted}]}>Nothing saved yet.</Text> : (showPanel==="bookmarks"?bookmarks:history).map((item,i)=><Pressable key={item.url+i} onPress={()=>go(item.url)} style={s.item}><Text numberOfLines={1} style={[s.itemTitle,{color:fg}]}>{item.title}</Text><Text numberOfLines={1} style={[s.note,{color:muted}]}>{item.url}</Text></Pressable>) : <>
-        <Pressable style={s.item} onPress={()=>setDark(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Appearance: {dark?"Dark":"Light"}</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>setDark(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Appearance: {dark?"Dark":"Light"}</Text><Text style={[s.note,{color:muted}]}>Switch between a dark and light browser theme</Text></Pressable>
+        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Default search provider</Text><Text style={[s.note,{color:muted}]}>Used when you type words instead of a website address</Text><View style={s.aiModes}>{([{id:"google",label:"Google"},{id:"bing",label:"Bing"},{id:"duckduckgo",label:"DuckDuckGo"},{id:"brave",label:"Brave"},{id:"wikipedia",label:"Wikipedia"}] as const).map(p=><Pressable key={p.id} onPress={()=>setSearchProvider(p.id)} style={[s.aiMode,{backgroundColor:searchProvider===p.id?"#6558f5":bg}]}><Text style={{color:searchProvider===p.id?"white":fg,fontSize:11,fontWeight:"700"}}>{p.label}{searchProvider===p.id?" ✓":""}</Text></Pressable>)}</View></View>
         <Pressable style={s.item} onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Private mode: {privateMode?"On":"Off"}</Text><Text style={[s.note,{color:muted}]}>Stops Orbit's in-memory history list from recording new visits. Websites and OS-level logging may still retain data.</Text></Pressable>
         <Pressable style={s.item} onPress={()=>setShowPanel("settings")}><Text style={[s.itemTitle,{color:fg}]}>Updates & downloads</Text><Text style={[s.note,{color:muted}]}>{updateStatus}</Text></Pressable>
-        <Pressable style={s.item} onPress={()=>{setHistory([]);setShowPanel("history");}}><Text style={[s.itemTitle,{color:fg}]}>Clear Orbit history</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>{setHistory([]);setShowPanel("history");}}><Text style={[s.itemTitle,{color:fg}]}>Clear Orbit history</Text><Text style={[s.note,{color:muted}]}>Removes saved Orbit visit history from this device</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>{setBookmarks([]);setHistory([]);web.current?.clearCache(true);setDownloadsHelp("Orbit bookmarks, history, and cached WebView files were cleared where supported.");}}><Text style={[s.itemTitle,{color:fg}]}>Clear browsing data</Text><Text style={[s.note,{color:muted}]}>Clears saved bookmarks, history and WebView cache. It does not erase website/server logs or downloaded files.</Text></Pressable>
+        {downloadsHelp ? <Text style={[s.note,{color:muted}]}>{downloadsHelp}</Text> : null}
         <Pressable style={s.item} onPress={()=>{const id=Date.now();setTabs([{id,title:"New tab",url:HOME}]);setActive(id);setInput(HOME);setShowPanel("none");}}><Text style={[s.itemTitle,{color:fg}]}>Reset tabs</Text><Text style={[s.note,{color:muted}]}>Close current tabs and start fresh</Text></Pressable>
       </>}
     </View> : <View style={s.webWrap}><WebView key={active} ref={web} source={{uri:current.url}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{updateCurrent({url:e.url,title:e.title||e.url});setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>}
