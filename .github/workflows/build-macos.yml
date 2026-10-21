@@ -47,4 +47,21 @@ jobs:
           prerelease: true
           make_latest: false
           overwrite_files: true
+      - name: Delete stale assets from this macOS architecture release
+        uses: actions/github-script@v7
+        env:
+          RELEASE_TAG: orbit-browser-macos-${{ matrix.arch }}-latest
+        with:
+          script: |
+            const fs = require('fs');
+            const keep = fs.readdirSync('desktop/dist').filter(name => name.toLowerCase().endsWith('.dmg'));
+            if (keep.length === 0) throw new Error('No new macOS DMG found; refusing to delete old release assets.');
+            const release = await github.rest.repos.getReleaseByTag({owner: context.repo.owner, repo: context.repo.repo, tag: process.env.RELEASE_TAG});
+            const assets = await github.paginate(github.rest.repos.listReleaseAssets, {owner: context.repo.owner, repo: context.repo.repo, release_id: release.data.id, per_page: 100});
+            for (const asset of assets) {
+              if (!keep.includes(asset.name)) {
+                await github.rest.repos.deleteReleaseAsset({owner: context.repo.owner, repo: context.repo.repo, asset_id: asset.id});
+                core.info('Deleted stale macOS asset: ' + asset.name);
+              }
+            }
           files: desktop/dist/*.dmg
