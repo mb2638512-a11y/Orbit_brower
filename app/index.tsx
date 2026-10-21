@@ -19,7 +19,9 @@ export default function Home() {
   const [tabs, setTabs] = useState<Tab[]>([{ id: 1, title: "New tab", url: HOME }]);
   const [active, setActive] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [showPanel, setShowPanel] = useState<"none" | "bookmarks" | "history" | "engines" | "settings">("none");
+  const [showPanel, setShowPanel] = useState<"none" | "bookmarks" | "history" | "engines" | "settings" | "globalai">("none");
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiMode, setAiMode] = useState<"all" | "search" | "models" | "tools">("all");
   const [bookmarks, setBookmarks] = useState<Tab[]>([]);
   const [history, setHistory] = useState<Tab[]>([]);
   const [privateMode, setPrivateMode] = useState(false);
@@ -97,6 +99,7 @@ export default function Home() {
       </View>
       <View style={s.quickRow}>
         <Text style={[s.engine,{color:muted}]}>{Platform.OS==="ios"?"WebKit engine":Platform.OS==="android"?"Android System WebView":"Browser engine"}</Text>
+        <Pressable onPress={()=>setShowPanel(showPanel==="globalai"?"none":"globalai")}><Text style={[s.quick,{color:"#a78bfa",fontWeight:"900"}]}>✦ Global AI</Text></Pressable>
         <Pressable onPress={addBookmark}><Text style={[s.quick,{color:fg}]}>☆ Save</Text></Pressable>
         <Pressable onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.quick,{color:"#a78bfa"}]}>↻ Updates</Text></Pressable>
         <Pressable onPress={()=>setShowPanel(showPanel==="engines"?"none":"engines")}><Text style={[s.quick,{color:fg}]}>⚙ Engines</Text></Pressable>
@@ -105,7 +108,17 @@ export default function Home() {
     </View>
     {showPanel!=="none" ? <View style={[s.panel,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
       <View style={s.panelHeader}><Text style={[s.panelTitle,{color:fg}]}>{showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":showPanel==="engines"?"Available engines":"Browser settings"}</Text><Pressable onPress={()=>setShowPanel("none")}><Text style={{color:muted,fontSize:20}}>×</Text></Pressable></View>
-      {showPanel==="settings" ? <>
+      {showPanel==="globalai" ? <ScrollView keyboardShouldPersistTaps="handled">
+        <Text style={[s.note,{color:muted}]}>One hub for multi-engine search, AI model routing, and browser tools. Live provider access requires configured integrations; this panel does not claim 80+ providers are already connected.</Text>
+        <View style={s.aiModes}>
+          {([{id:"all",label:"All-in-one"},{id:"search",label:"Search"},{id:"models",label:"AI models"},{id:"tools",label:"Browser tools"}] as const).map(m=><Pressable key={m.id} onPress={()=>setAiMode(m.id)} style={[s.aiMode,{backgroundColor:aiMode===m.id?"#6558f5":bg}]}><Text style={{color:aiMode===m.id?"white":fg,fontSize:11,fontWeight:"700"}}>{m.label}</Text></Pressable>)}
+        </View>
+        <View style={[s.address,{backgroundColor:bg,borderColor:dark?"#29344e":"#e0e5ef",marginTop:12}]}><TextInput value={aiQuery} onChangeText={setAiQuery} onSubmitEditing={()=>{const q=aiQuery.trim();if(!q)return;const url="https://www.google.com/search?q="+encodeURIComponent(q);setInput(url);updateCurrent({url,title:q});setShowPanel("none");}} placeholder="Ask Global AI or research the web…" placeholderTextColor={muted} style={[s.input,{color:fg}]} returnKeyType="search"/></View>
+        {aiMode==="all" || aiMode==="search" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Multi-engine search</Text><Text style={[s.note,{color:muted}]}>Search providers can be routed through a self-hosted SearXNG gateway, which supports many upstream engines. Live engine availability depends on server configuration and upstream limits.</Text><Pressable onPress={()=>{const q=aiQuery.trim()||input;go("https://www.google.com/search?q="+encodeURIComponent(q));}}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Search the web ↗</Text></Pressable><Pressable onPress={()=>Linking.openURL("https://github.com/searxng/searxng")}><Text style={[s.quick,{color:fg,marginTop:8}]}>SearXNG integration project ↗</Text></Pressable></View>:null}
+        {aiMode==="all" || aiMode==="models" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>AI model router</Text><Text style={[s.note,{color:muted}]}>Planned: choose an available model by task through configured provider APIs. No model API keys or model provider is connected by this UI yet.</Text><Pressable onPress={()=>Linking.openURL("https://models.dev/")}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Explore model catalog ↗</Text></Pressable></View>:null}
+        {aiMode==="all" || aiMode==="tools" ? <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Browser automation tools</Text><Text style={[s.note,{color:muted}]}>Planned: page reading, summarization, controlled navigation, and Playwright-based testing. Sensitive actions should require user approval.</Text><Pressable onPress={()=>Linking.openURL("https://playwright.dev/")}><Text style={[s.quick,{color:"#a78bfa",marginTop:8}]}>Playwright documentation ↗</Text></Pressable></View>:null}
+        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Connection status</Text><Text style={[s.note,{color:muted}]}>Prototype hub • web search shortcut works • model routing and browser automation still need backend integration and testing.</Text></View>
+      </ScrollView> : showPanel==="settings" ? <>
         <Text style={[s.note,{color:muted}]}>{updateStatus}</Text>
         <Pressable style={s.item} onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.itemTitle,{color:fg}]}>Open platform downloads ↗</Text><Text style={[s.note,{color:muted}]}>Orbit checks GitHub releases when the app starts. Installation may still require your OS or app store approval.</Text></Pressable>
         <Pressable style={s.item} onPress={()=>{setUpdateStatus("Checking for updates…"); Linking.openURL("https://github.com/mb2638512-a11y/Orbit_brower/actions")}}><Text style={[s.itemTitle,{color:fg}]}>Build status and updates</Text></Pressable>
@@ -138,7 +151,7 @@ const s=StyleSheet.create({
  brandRow:{flexDirection:"row",alignItems:"center",gap:10},logo:{width:40,height:40,borderRadius:13,backgroundColor:"#6558f5",alignItems:"center",justifyContent:"center"},logoText:{fontSize:23,color:"white",fontWeight:"900"},brand:{fontSize:17,fontWeight:"900",letterSpacing:2},sub:{fontSize:8,letterSpacing:1.2,marginTop:2},square:{width:38,height:38,borderRadius:12,alignItems:"center",justifyContent:"center"},
  tabs:{gap:7,paddingVertical:1},tab:{minHeight:34,borderWidth:1,borderRadius:11,paddingHorizontal:10,flexDirection:"row",alignItems:"center",justifyContent:"space-between"},
  address:{height:49,borderWidth:1,borderRadius:15,paddingLeft:12,paddingRight:5,flexDirection:"row",alignItems:"center",gap:8},input:{flex:1,fontSize:13,height:"100%"},go:{backgroundColor:"#6558f5",paddingHorizontal:14,paddingVertical:10,borderRadius:11},
- quickRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",gap:8},engine:{fontSize:10,flex:1},quick:{fontSize:11,fontWeight:"700"},
+ quickRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",gap:8},engine:{fontSize:10,flex:1},quick:{fontSize:11,fontWeight:"700"}, aiModes:{flexDirection:"row",flexWrap:"wrap",gap:6,marginTop:12}, aiMode:{paddingHorizontal:10,paddingVertical:9,borderRadius:10},
  webWrap:{flex:1,overflow:"hidden"},bottom:{minHeight:60,borderTopWidth:1,flexDirection:"row",alignItems:"center",justifyContent:"space-around",paddingHorizontal:1,paddingBottom:2},nav:{alignItems:"center",justifyContent:"center",minWidth:48,paddingHorizontal:2,paddingVertical:4,borderRadius:10},navIcon:{fontSize:23,lineHeight:26},navLabel:{fontSize:9,fontWeight:"600"},
  panel:{flex:1,marginHorizontal:12,marginBottom:6,borderWidth:1,borderRadius:16,padding:14},panelHeader:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:12},panelTitle:{fontSize:16,fontWeight:"800"},note:{fontSize:12,lineHeight:18},item:{paddingVertical:11,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"#64748b44"},itemTitle:{fontSize:13,fontWeight:"700"},footer:{textAlign:"center",fontSize:9,paddingVertical:3}
 });
