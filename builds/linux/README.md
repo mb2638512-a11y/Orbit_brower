@@ -1,3 +1,3 @@
-# Linux build output
+# Linux downloads
 
-The Linux workflow packages the Expo web app as an Electron AppImage for x64 and publishes it as a workflow artifact. This is a browser-shell prototype; it does not yet have Chromium-level browser security or engine features.
+After a successful workflow, download `Orbit-Browser-Linux-x64-AppImage` from GitHub Actions Artifacts. The AppImage targets x86_64 Linux; make it executable before launching. ARM Linux is not included yet.
