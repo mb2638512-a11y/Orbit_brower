@@ -30,9 +30,11 @@ jobs:
       - name: Prepare desktop package
         run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install --include=dev
       - name: Verify Electron installation
-        run: npm --prefix desktop exec -- electron --version
+        working-directory: desktop
+        run: npx electron --version
       - name: Build macOS DMG
-        run: npm --prefix desktop exec -- electron-builder --mac dmg --${{ matrix.arch }}
+        working-directory: desktop
+        run: npx electron-builder --mac dmg --${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
           name: Orbit-Browser-macOS-${{ matrix.arch }}
