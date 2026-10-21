@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "main": "expo-router/entry",
-  "scripts": { "start": "expo start", "android": "expo run:android", "web": "expo start --web" },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "web": "expo start --web"
+  },
   "dependencies": {
     "expo": "~54.0.0",
     "expo-status-bar": "~3.0.8",
@@ -14,7 +18,14 @@
     "react-native-web": "^0.21.0",
     "react-native-webview": "13.15.0",
     "react-native-safe-area-context": "~5.6.0",
-    "react-native-screens": "~4.16.0"
+    "react-native-screens": "~4.16.0",
+    "expo-linking": "~8.0.8",
+    "expo-constants": "~18.0.10",
+    "expo-font": "~14.0.9",
+    "expo-splash-screen": "~31.0.10"
   },
-  "devDependencies": { "@types/react": "~19.1.0", "typescript": "~5.9.2" }
+  "devDependencies": {
+    "@types/react": "~19.1.0",
+    "typescript": "~5.9.2"
+  }
 }
