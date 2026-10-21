@@ -1,6 +1,9 @@
 name: Build Orbit Browser macOS
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['desktop/**', '.github/workflows/build-macos.yml', 'package.json', 'app/**', 'app.json']
 permissions:
   contents: write
 jobs:
@@ -15,16 +18,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install Expo app dependencies
+          cache: npm
+      - name: Install app dependencies
         run: npm install --legacy-peer-deps
       - name: Export web app
         run: npx expo export --platform web
       - name: Prepare desktop package
         run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install --include=dev
       - name: Verify Electron installation
-        run: npm --prefix desktop exec -- electron --version
+        run: npx --prefix desktop electron --version
       - name: Build macOS DMG
-        run: npm --prefix desktop exec -- electron-builder --mac dmg --${{ matrix.arch }}
+        working-directory: desktop
+        run: npx electron-builder --mac dmg --${{ matrix.arch }}
+      - name: Verify DMG artifact exists
+        run: test -n "$(find desktop/dist -maxdepth 1 -name '*.dmg' -print -quit)"
       - uses: actions/upload-artifact@v4
         with:
           name: Orbit-Browser-macOS-${{ matrix.arch }}
@@ -34,8 +41,8 @@ jobs:
       - name: Publish persistent GitHub Release download
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "orbit-browser-macos-${{ matrix.arch }}-latest"
-          name: "Orbit Browser macOS ${{ matrix.arch }} (latest)"
+          tag_name: orbit-browser-macos-${{ matrix.arch }}-latest
+          name: Orbit Browser macOS ${{ matrix.arch }} (latest)
           prerelease: true
           make_latest: false
           overwrite_files: true
