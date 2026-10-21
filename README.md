@@ -17,6 +17,20 @@
 
 **Note:** A release page will show its file under **Assets** after the matching build and publishing workflow succeeds. If it says no assets are available yet, that platform's build has not finished publishing.
 
+## Linux dashboard previews
+
+These are **UI previews based on the current Orbit Browser app source**, not photographs captured from a running Linux desktop. The x64 and ARM64 editions use the same interface.
+
+### Linux x64
+![Orbit Browser Linux x64 dashboard preview](screenshots/linux-x64-dashboard.svg)
+
+[Download Linux x64 AppImage](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-linux-x64-latest)
+
+### Linux ARM64
+![Orbit Browser Linux ARM64 dashboard preview](screenshots/linux-arm64-dashboard.svg)
+
+[Download Linux ARM64 AppImage](https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/orbit-browser-linux-arm64-latest)
+
 ## Install notes
 
 - **Android:** download the APK, open it, and allow installation from this source if Android asks. This is a standalone testing build; it bundles JavaScript and does not require Metro.
