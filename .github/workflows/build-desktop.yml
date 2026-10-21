@@ -14,6 +14,10 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, arm64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,24 +38,32 @@ jobs:
       - name: Verify Electron installation
         run: npm --prefix desktop exec -- electron --version
       - name: Build Windows installer
-        run: npm --prefix desktop exec -- electron-builder --win nsis --x64
+        run: npm --prefix desktop exec -- electron-builder -- --win nsis --${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
-          name: Orbit-Browser-Windows-x64-Installer
+          name: Orbit-Browser-Windows-${{ matrix.arch }}-Installer
           path: desktop/dist/*.exe
           if-no-files-found: error
           retention-days: 90
       - name: Publish persistent GitHub Release download
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "orbit-browser-windows-latest"
-          name: "Orbit Browser Windows (latest)"
+          tag_name: orbit-browser-windows-${{ matrix.arch }}-latest
+          name: Orbit Browser Windows ${{ matrix.arch }} (latest)
           prerelease: true
           make_latest: false
           overwrite_files: true
           files: desktop/dist/*.exe
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -68,18 +80,18 @@ jobs:
         env:
           ELECTRON_DISABLE_SANDBOX: 1
       - name: Build Linux AppImage
-        run: npm --prefix desktop exec -- electron-builder --linux AppImage --x64
+        run: npm --prefix desktop exec -- electron-builder -- --linux AppImage --${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
-          name: Orbit-Browser-Linux-x64-AppImage
+          name: Orbit-Browser-Linux-${{ matrix.arch }}-AppImage
           path: desktop/dist/*.AppImage
           if-no-files-found: error
           retention-days: 90
       - name: Publish persistent GitHub Release download
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "orbit-browser-linux-latest"
-          name: "Orbit Browser Linux (latest)"
+          tag_name: orbit-browser-linux-${{ matrix.arch }}-latest
+          name: Orbit Browser Linux ${{ matrix.arch }} (latest)
           prerelease: true
           make_latest: false
           overwrite_files: true
