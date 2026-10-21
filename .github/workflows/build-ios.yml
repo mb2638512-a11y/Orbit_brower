@@ -3,6 +3,11 @@ on:
   workflow_dispatch:
   push:
     branches: [platform-builds]
+    paths:
+      - 'app/**'
+      - '.github/workflows/build-ios.yml'
+      - 'package.json'
+      - 'app.json'
 permissions:
   contents: write
 jobs:
