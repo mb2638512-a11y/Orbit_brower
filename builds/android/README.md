@@ -1,3 +1,3 @@
-# Android build output
+# Android downloads
 
-The Android GitHub Actions workflow builds an installable debug APK and publishes it as the `Orbit-Browser-Android-APK` artifact. Download it from the successful workflow run. Generated binaries are kept as workflow artifacts rather than committed to Git.
+After a successful GitHub Actions run, download `Orbit-Browser-Android-debug-APK` from the workflow's Artifacts section. The debug APK is suitable for testing on compatible Android phones/tablets (enable install from this source when prompted). It is not a Play Store release-signed APK.
