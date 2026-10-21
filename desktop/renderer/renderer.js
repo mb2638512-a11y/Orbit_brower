@@ -18,3 +18,11 @@ document.getElementById("aiSearch").addEventListener("submit",e=>{e.preventDefau
 document.getElementById("aiSearchTab").addEventListener("click",()=>document.getElementById("aiStatus").textContent="Search shortcut is available. A self-hosted SearXNG gateway can aggregate many upstream engines once deployed and configured.");
 document.getElementById("aiModels").addEventListener("click",()=>{document.getElementById("aiStatus").textContent="AI model routing is planned; connect model provider APIs and secure server-side credentials before enabling it.";window.open("https://models.dev/","_blank","noopener,noreferrer");});
 document.getElementById("aiTools").addEventListener("click",()=>{document.getElementById("aiStatus").textContent="Browser automation is planned; connect and test controlled tools. Sensitive actions should require user approval.";window.open("https://playwright.dev/","_blank","noopener,noreferrer");});
+
+// Quick search shortcuts and keyboard navigation.
+const quickSearch=(base)=>{const q=input.value.trim();go(base+encodeURIComponent(q));};
+document.getElementById("quickGoogle").addEventListener("click",()=>quickSearch("https://www.google.com/search?q="));
+document.getElementById("quickBing").addEventListener("click",()=>quickSearch("https://www.bing.com/search?q="));
+document.getElementById("quickDuck").addEventListener("click",()=>quickSearch("https://duckduckgo.com/?q="));
+document.getElementById("quickWiki").addEventListener("click",()=>quickSearch("https://en.wikipedia.org/wiki/Special:Search?search="));
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="l"){e.preventDefault();input.focus();input.select();}});
