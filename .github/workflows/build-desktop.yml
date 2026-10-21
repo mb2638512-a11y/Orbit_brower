@@ -21,6 +21,8 @@ jobs:
           node-version: 22
       - name: Install Expo app dependencies
         run: npm install --legacy-peer-deps
+      - name: Install Expo web dependencies
+        run: npx expo install react-dom react-native-web expo-linking expo-constants expo-font
       - name: Export web app
         run: npx expo export --platform web
       - name: Prepare desktop package
@@ -36,7 +38,7 @@ jobs:
           name: Orbit-Browser-Windows-x64-Installer
           path: desktop/dist/*.exe
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -57,4 +59,4 @@ jobs:
           name: Orbit-Browser-Linux-x64-AppImage
           path: desktop/dist/*.AppImage
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
