@@ -2,7 +2,7 @@ name: Build Orbit Browser Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [platform-builds]
+    branches: [main, platform-builds]
     paths:
       - 'app/**'
       - 'package.json'
