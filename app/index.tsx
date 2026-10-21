@@ -165,7 +165,7 @@ export default function Home() {
         {downloadsHelp ? <Text style={[s.note,{color:muted}]}>{downloadsHelp}</Text> : null}
         <Pressable style={s.item} onPress={()=>{const id=Date.now();setTabs([{id,title:"New tab",url:HOME}]);setActive(id);setInput(HOME);setShowPanel("none");}}><Text style={[s.itemTitle,{color:fg}]}>Reset tabs</Text><Text style={[s.note,{color:muted}]}>Close current tabs and start fresh</Text></Pressable>
       </>}
-    </View> : <View style={s.webWrap}><WebView key={active} ref={web} source={{uri:current.url}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{updateCurrent({url:e.url,title:e.title||e.url});setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>}
+    </View> : <View style={s.webWrap}><WebView key={active} ref={web} source={{uri:current.url}} onFileDownload={event=>{const url=event.nativeEvent.downloadUrl;if(url)Linking.openURL(url).catch(()=>{});}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{updateCurrent({url:e.url,title:e.title||e.url});setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>}
     <View style={[s.bottom,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
       {navButton("Back",()=>web.current?.goBack(),"‹")}
       {navButton("Forward",()=>web.current?.goForward(),"›")}
