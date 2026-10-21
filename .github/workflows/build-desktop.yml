@@ -1,0 +1,60 @@
+name: Build Orbit Browser Windows and Linux
+on:
+  workflow_dispatch:
+  push:
+    branches: [platform-builds]
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/build-desktop.yml'
+      - 'app/**'
+      - 'package.json'
+      - 'app.json'
+permissions:
+  contents: read
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Expo app dependencies
+        run: npm install --legacy-peer-deps
+      - name: Export web app
+        run: npx expo export --platform web
+      - name: Prepare desktop package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force desktop/renderer | Out-Null
+          Copy-Item dist/* desktop/renderer/ -Recurse -Force
+          npm --prefix desktop install
+      - name: Build Windows installer
+        run: npm --prefix desktop exec electron-builder -- --win nsis --x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Orbit-Browser-Windows-x64
+          path: desktop/dist/*.exe
+          if-no-files-found: error
+          retention-days: 14
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Expo app dependencies
+        run: npm install --legacy-peer-deps
+      - name: Export web app
+        run: npx expo export --platform web
+      - name: Prepare desktop package
+        run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install
+      - name: Build Linux AppImage
+        run: npm --prefix desktop exec electron-builder -- --linux AppImage --x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Orbit-Browser-Linux-x64
+          path: desktop/dist/*.AppImage
+          if-no-files-found: error
+          retention-days: 14
