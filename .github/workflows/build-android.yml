@@ -56,4 +56,19 @@ jobs:
           prerelease: true
           make_latest: false
           overwrite_files: true
+      - name: Delete stale assets from the Android latest release
+        uses: actions/github-script@v7
+        env:
+          RELEASE_TAG: orbit-browser-android-latest
+          KEEP_ASSET: Orbit-Browser-Android.apk
+        with:
+          script: |
+            const release = await github.rest.repos.getReleaseByTag({owner: context.repo.owner, repo: context.repo.repo, tag: process.env.RELEASE_TAG});
+            const assets = await github.paginate(github.rest.repos.listReleaseAssets, {owner: context.repo.owner, repo: context.repo.repo, release_id: release.data.id, per_page: 100});
+            for (const asset of assets) {
+              if (asset.name !== process.env.KEEP_ASSET) {
+                await github.rest.repos.deleteReleaseAsset({owner: context.repo.owner, repo: context.repo.repo, asset_id: asset.id});
+                core.info('Deleted stale Android asset: ' + asset.name);
+              }
+            }
           files: builds/android/Orbit-Browser-Android.apk
