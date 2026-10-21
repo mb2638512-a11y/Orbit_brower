@@ -1,3 +1,3 @@
-# Windows build output
+# Windows downloads
 
-The Windows workflow packages the Expo web app as a desktop app using Electron and publishes a Windows x64 installer artifact. This is a browser-shell prototype; it does not yet have Chromium-level browser security or engine features.
+After a successful workflow, download `Orbit-Browser-Windows-x64-Installer` from GitHub Actions Artifacts. The `.exe` installer targets 64-bit Windows 10/11. It is not signed with a commercial code-signing certificate.
