@@ -32,7 +32,7 @@ jobs:
           name: Orbit-Browser-iOS-Simulator
           path: builds/ios/Orbit-Browser-iOS-Simulator.zip
           if-no-files-found: error
-          retention-days: 90
+          retention-days: 365
       - name: Publish persistent GitHub Release download
         uses: softprops/action-gh-release@v2
         with:
