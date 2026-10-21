@@ -17,6 +17,10 @@
 
 A release page will show its file under **Assets** after its build and publishing workflow succeeds.
 
+## Updates and releases
+
+The mobile UI checks the relevant GitHub release when it starts and provides an Updates link. The desktop shell has an Updates shortcut to release downloads. GitHub Actions rebuilds supported packages when relevant changes are pushed to `main`. This is **release discovery, not silent auto-installation**: desktop auto-install still needs a correctly configured updater feed, signed/versioned releases, and platform-specific testing; Android installation requires user/OS approval unless distributed through a managed store; iOS requires Apple signing and App Store/TestFlight distribution. iOS Simulator builds are not regular iPhone updates.
+
 ## Current UI features
 
 The mobile UI includes tab switching/closing, address/search bar, back/forward/reload/home, in-memory bookmarks and history, dark/light theme, and a private-mode toggle that stops Orbit's own history list from recording new visits. These are prototype features; bookmarks/settings are not yet persisted across app restarts, and private mode does not prevent websites, the operating system, DNS providers, or network operators from logging activity.
