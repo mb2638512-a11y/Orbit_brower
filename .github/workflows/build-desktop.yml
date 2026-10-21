@@ -10,7 +10,7 @@ on:
       - 'package.json'
       - 'app.json'
 permissions:
-  contents: read
+  contents: write
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -60,3 +60,12 @@ jobs:
           path: desktop/dist/*.AppImage
           if-no-files-found: error
           retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "orbit-browser-linux-latest"
+          name: "Orbit Browser Linux (latest)"
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: desktop/dist/*.AppImage
