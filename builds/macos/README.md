@@ -1,3 +1,3 @@
-# macOS build output
+# macOS downloads
 
-The macOS workflow builds `.dmg` installers for Apple Silicon and Intel targets where supported. Builds are unsigned unless Apple Developer ID signing and notarization are configured, so Gatekeeper may show a warning. This is an experimental Electron browser shell, not a full Chromium browser.
+After a successful workflow, download `Orbit-Browser-macOS-arm64` for Apple Silicon Macs (M1/M2/M3/M4/M5) or `Orbit-Browser-macOS-x64` for Intel Macs from GitHub Actions Artifacts. These are unsigned DMGs unless signing/notarization credentials are configured, so macOS may show a Gatekeeper warning.
