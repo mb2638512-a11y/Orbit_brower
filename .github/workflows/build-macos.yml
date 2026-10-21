@@ -2,7 +2,7 @@ name: Build Orbit Browser macOS
 on:
   workflow_dispatch:
   push:
-    branches: [main, platform-builds]
+    branches: [build/macos]
     paths:
       - 'desktop/**'
       - '.github/workflows/build-macos.yml'
