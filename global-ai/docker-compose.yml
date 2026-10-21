@@ -1,0 +1,25 @@
+services:
+  searxng:
+    image: searxng/searxng:latest
+    restart: unless-stopped
+    environment:
+      SEARXNG_BASE_URL: http://localhost:8081/
+      SEARXNG_SETTINGS_PATH: /etc/searxng/settings.yml
+    volumes:
+      - ./searxng-settings.yml:/etc/searxng/settings.yml:ro
+    expose:
+      - "8080"
+  global-ai:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - searxng
+    ports:
+      - "127.0.0.1:8082:8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
