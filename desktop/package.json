@@ -8,16 +8,35 @@
     "build:web": "cd .. && npx expo export --platform web",
     "start": "electron ."
   },
-  "dependencies": {
-    "electron": "^35.0.0",
-    "electron-builder": "^26.0.0"
-  },
+  "dependencies": {},
   "build": {
     "appId": "com.orbitbrowser.app",
     "productName": "Orbit Browser",
-    "directories": { "output": "dist" },
-    "files": ["main.cjs", "preload.cjs", "renderer/**/*", "package.json"],
-    "win": { "target": ["nsis"], "artifactName": "Orbit-Browser-Setup-${version}.${ext}" },
-    "linux": { "target": ["AppImage"], "category": "Network;WebBrowser", "artifactName": "Orbit-Browser-${version}.${ext}" }
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Orbit-Browser-Setup-${version}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Network;WebBrowser",
+      "artifactName": "Orbit-Browser-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "35.7.5",
+    "electron-builder": "^26.0.0"
   }
 }
