@@ -17,6 +17,10 @@
 
 A release page will show its file under **Assets** after its build and publishing workflow succeeds.
 
+## Global AI — initial prototype
+
+The mobile and desktop interfaces now include a Global AI hub with three areas: multi-engine search, AI model routing, and browser automation tools. The current search button opens a Google search shortcut; the UI links to SearXNG, Models.dev, and Playwright as implementation references. **This is not yet a connected 80+ engine AI service:** SearXNG must be deployed/configured, model provider APIs and server-side secrets must be added, and browser tools must be implemented and security-tested. Engine counts vary by configuration and upstream availability. Never expose provider API keys in the app client.
+
 ## Updates and releases
 
 The mobile UI checks the relevant GitHub release when it starts and provides an Updates link. The desktop shell has an Updates shortcut to release downloads. GitHub Actions rebuilds supported packages when relevant changes are pushed to `main`. This is **release discovery, not silent auto-installation**: desktop auto-install still needs a correctly configured updater feed, signed/versioned releases, and platform-specific testing; Android installation requires user/OS approval unless distributed through a managed store; iOS requires Apple signing and App Store/TestFlight distribution. iOS Simulator builds are not regular iPhone updates.
