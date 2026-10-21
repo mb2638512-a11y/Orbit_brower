@@ -1,0 +1,49 @@
+name: Build Orbit Browser iOS Simulator
+on:
+  workflow_dispatch:
+  push:
+    branches: [platform-builds]
+    paths:
+      - 'app/**'
+      - '.github/workflows/build-ios.yml'
+      - 'package.json'
+      - 'app.json'
+permissions:
+  contents: write
+jobs:
+  ios-simulator:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+      - name: Generate iOS native project
+        run: npx expo prebuild --platform ios --non-interactive
+      - name: Build iOS Simulator app
+        run: |
+          cd ios
+          xcodebuild -workspace OrbitBrowser.xcworkspace -scheme OrbitBrowser -configuration Debug -sdk iphonesimulator -derivedDataPath build CODE_SIGNING_ALLOWED=NO
+      - name: Package simulator app
+        run: |
+          mkdir -p builds/ios
+          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP_PATH"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" builds/ios/Orbit-Browser-iOS-Simulator.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Orbit-Browser-iOS-Simulator
+          path: builds/ios/Orbit-Browser-iOS-Simulator.zip
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: orbit-browser-ios-simulator-latest
+          name: Orbit Browser iOS Simulator (latest)
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: builds/ios/Orbit-Browser-iOS-Simulator.zip
