@@ -1,0 +1,23 @@
+{
+  "name": "orbit-browser-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Orbit Browser desktop shell",
+  "main": "main.cjs",
+  "scripts": {
+    "build:web": "cd .. && npx expo export --platform web",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.orbitbrowser.app",
+    "productName": "Orbit Browser",
+    "directories": { "output": "dist" },
+    "files": ["main.cjs", "preload.cjs", "renderer/**/*", "package.json"],
+    "win": { "target": ["nsis"], "artifactName": "Orbit-Browser-Setup-${version}.${ext}" },
+    "linux": { "target": ["AppImage"], "category": "Network;WebBrowser", "artifactName": "Orbit-Browser-${version}.${ext}" }
+  }
+}
