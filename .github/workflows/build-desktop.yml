@@ -39,6 +39,15 @@ jobs:
           path: desktop/dist/*.exe
           if-no-files-found: error
           retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "orbit-browser-windows-latest"
+          name: "Orbit Browser Windows (latest)"
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: desktop/dist/*.exe
   build-linux:
     runs-on: ubuntu-latest
     steps:
