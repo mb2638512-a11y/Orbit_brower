@@ -10,7 +10,7 @@ on:
       - 'package.json'
       - 'app.json'
 permissions:
-  contents: read
+  contents: write
 jobs:
   build-macos:
     runs-on: macos-15
@@ -37,3 +37,12 @@ jobs:
           path: desktop/dist/*.dmg
           if-no-files-found: error
           retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "orbit-browser-macos-${{ matrix.arch }}-latest"
+          name: "Orbit Browser macOS ${{ matrix.arch }} (latest)"
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: desktop/dist/*.dmg
