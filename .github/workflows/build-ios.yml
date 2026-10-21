@@ -4,7 +4,7 @@ on:
   push:
     branches: [platform-builds]
 permissions:
-  contents: read
+  contents: write
 jobs:
   ios-simulator:
     runs-on: macos-15
@@ -33,3 +33,12 @@ jobs:
           path: builds/ios/Orbit-Browser-iOS-Simulator.zip
           if-no-files-found: error
           retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: orbit-browser-ios-simulator-latest
+          name: Orbit Browser iOS Simulator (latest)
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: builds/ios/Orbit-Browser-iOS-Simulator.zip
