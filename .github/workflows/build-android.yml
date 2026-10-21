@@ -2,7 +2,12 @@ name: Build Orbit Browser Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, platform-builds]
+    branches: [platform-builds]
+    paths:
+      - 'app/**'
+      - 'package.json'
+      - 'app.json'
+      - '.github/workflows/build-android.yml'
 permissions:
   contents: read
 jobs:
@@ -17,7 +22,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - name: Configure Android SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - name: Install dependencies
         run: npm install --legacy-peer-deps
       - name: Generate Android native project
@@ -26,10 +34,10 @@ jobs:
         working-directory: android
         run: chmod +x gradlew && ./gradlew assembleDebug
       - name: Copy APK into build folder
-        run: mkdir -p builds/android && cp android/app/build/outputs/apk/debug/app-debug.apk builds/android/Orbit-Browser-debug.apk
+        run: mkdir -p builds/android && cp android/app/build/outputs/apk/debug/app-debug.apk builds/android/Orbit-Browser-Android-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: Orbit-Browser-Android-APK
-          path: builds/android/Orbit-Browser-debug.apk
+          name: Orbit-Browser-Android-debug-APK
+          path: builds/android/Orbit-Browser-Android-debug.apk
           if-no-files-found: error
           retention-days: 14
