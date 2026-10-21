@@ -1,0 +1,10 @@
+use_default_settings: true
+server:
+  secret_key: "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET"
+  limiter: true
+  image_proxy: false
+search:
+  safe_search: 1
+  formats:
+    - html
+    - json
