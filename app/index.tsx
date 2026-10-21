@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView } from "react-native";
 import { WebView } from "react-native-webview";
+import * as Linking from "expo-linking";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const HOME = "https://www.google.com";
@@ -22,6 +23,26 @@ export default function Home() {
   const [bookmarks, setBookmarks] = useState<Tab[]>([]);
   const [history, setHistory] = useState<Tab[]>([]);
   const [privateMode, setPrivateMode] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState("Checking for updates…");
+  const [updateUrl, setUpdateUrl] = useState("https://github.com/mb2638512-a11y/Orbit_brower/releases");
+  useEffect(() => {
+    let alive = true;
+    const platform = Platform.OS === "android" ? "android" : Platform.OS === "ios" ? "ios-simulator" : null;
+    const tag = platform ? `orbit-browser-${platform}-latest` : null;
+    const releaseUrl = tag ? `https://github.com/mb2638512-a11y/Orbit_brower/releases/tag/${tag}` : "https://github.com/mb2638512-a11y/Orbit_brower/releases";
+    setUpdateUrl(releaseUrl);
+    fetch(tag ? `https://api.github.com/repos/mb2638512-a11y/Orbit_brower/releases/tags/${tag}` : "https://api.github.com/repos/mb2638512-a11y/Orbit_brower/releases?per_page=10")
+      .then(async response => { if (!response.ok) throw new Error("Release check unavailable"); return response.json(); })
+      .then(data => {
+        const releases = Array.isArray(data) ? data : [data];
+        const release = releases.find(item => item && item.assets && item.assets.length > 0);
+        if (!alive) return;
+        if (release) { setUpdateUrl(release.html_url || releaseUrl); setUpdateStatus("Latest platform build is published. Open releases to check the available download."); }
+        else setUpdateStatus("No published installer found yet for this platform.");
+      })
+      .catch(() => { if (alive) setUpdateStatus("Could not check updates right now. You can open the releases page manually."); });
+    return () => { alive = false; };
+  }, []);
   const web = useRef<WebView>(null);
   const current = tabs.find(t => t.id === active) || tabs[0];
   const bg = dark ? "#0b1020" : "#f4f6fb";
@@ -73,13 +94,18 @@ export default function Home() {
       <View style={s.quickRow}>
         <Text style={[s.engine,{color:muted}]}>{Platform.OS==="ios"?"WebKit engine":Platform.OS==="android"?"Android System WebView":"Browser engine"}</Text>
         <Pressable onPress={addBookmark}><Text style={[s.quick,{color:fg}]}>☆ Save</Text></Pressable>
+        <Pressable onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.quick,{color:"#a78bfa"}]}>↻ Updates</Text></Pressable>
         <Pressable onPress={()=>setShowPanel(showPanel==="engines"?"none":"engines")}><Text style={[s.quick,{color:fg}]}>⚙ Engines</Text></Pressable>
         <Pressable onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.quick,{color:privateMode?"#a78bfa":fg}]}>{privateMode?"◉ Private ON":"◉ Private"}</Text></Pressable>
       </View>
     </View>
     {showPanel!=="none" ? <View style={[s.panel,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
       <View style={s.panelHeader}><Text style={[s.panelTitle,{color:fg}]}>{showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":showPanel==="engines"?"Available engines":"Browser settings"}</Text><Pressable onPress={()=>setShowPanel("none")}><Text style={{color:muted,fontSize:20}}>×</Text></Pressable></View>
-      {showPanel==="engines" ? <>
+      {showPanel==="settings" ? <>
+        <Text style={[s.note,{color:muted}]}>{updateStatus}</Text>
+        <Pressable style={s.item} onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.itemTitle,{color:fg}]}>Open platform downloads ↗</Text><Text style={[s.note,{color:muted}]}>Orbit checks GitHub releases when the app starts. Installation may still require your OS or app store approval.</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>{setUpdateStatus("Checking for updates…"); Linking.openURL("https://github.com/mb2638512-a11y/Orbit_brower/actions")}}><Text style={[s.itemTitle,{color:fg}]}>Build status and updates</Text></Pressable>
+      </> : showPanel==="engines" ? <>
         <Text style={[s.note,{color:muted}]}>Engine support depends on the operating system. Orbit cannot switch rendering engines unless the native engine is bundled and integrated.</Text>
         <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Android System WebView</Text><Text style={[s.note,{color:muted}]}>Current Android renderer</Text></View>
         <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Apple WebKit</Text><Text style={[s.note,{color:muted}]}>iOS renderer; required platform engine</Text></View>
@@ -88,6 +114,7 @@ export default function Home() {
       </> : showPanel==="bookmarks" || showPanel==="history" ? (showPanel==="bookmarks"?bookmarks:history).length===0 ? <Text style={[s.note,{color:muted}]}>Nothing saved yet.</Text> : (showPanel==="bookmarks"?bookmarks:history).map((item,i)=><Pressable key={item.url+i} onPress={()=>go(item.url)} style={s.item}><Text numberOfLines={1} style={[s.itemTitle,{color:fg}]}>{item.title}</Text><Text numberOfLines={1} style={[s.note,{color:muted}]}>{item.url}</Text></Pressable>) : <>
         <Pressable style={s.item} onPress={()=>setDark(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Appearance: {dark?"Dark":"Light"}</Text></Pressable>
         <Pressable style={s.item} onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Private mode: {privateMode?"On":"Off"}</Text><Text style={[s.note,{color:muted}]}>Stops Orbit's in-memory history list from recording new visits. Websites and OS-level logging may still retain data.</Text></Pressable>
+        <Pressable style={s.item} onPress={()=>setShowPanel("settings")}><Text style={[s.itemTitle,{color:fg}]}>Updates & downloads</Text><Text style={[s.note,{color:muted}]}>{updateStatus}</Text></Pressable>
         <Pressable style={s.item} onPress={()=>setHistory([])}><Text style={[s.itemTitle,{color:fg}]}>Clear Orbit history</Text></Pressable>
       </>}
     </View> : <View style={s.webWrap}><WebView key={active} ref={web} source={{uri:current.url}} onLoadStart={()=>setLoading(true)} onLoadEnd={()=>setLoading(false)} onNavigationStateChange={e=>{updateCurrent({url:e.url,title:e.title||e.url});setInput(e.url)}} javaScriptEnabled domStorageEnabled sharedCookiesEnabled startInLoadingState style={{flex:1,backgroundColor:bg}} /></View>}
