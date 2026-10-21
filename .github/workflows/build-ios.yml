@@ -46,6 +46,7 @@ jobs:
           prerelease: true
           make_latest: false
           overwrite_files: true
+          files: builds/ios/Orbit-Browser-iOS-Simulator.zip
       - name: Delete stale assets from the iOS simulator release
         uses: actions/github-script@v7
         env:
@@ -61,4 +62,3 @@ jobs:
                 core.info('Deleted stale iOS simulator asset: ' + asset.name);
               }
             }
-          files: builds/ios/Orbit-Browser-iOS-Simulator.zip
