@@ -40,4 +40,4 @@ jobs:
           name: Orbit-Browser-Android-debug-APK
           path: builds/android/Orbit-Browser-Android-debug.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
