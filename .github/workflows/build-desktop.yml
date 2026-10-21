@@ -1,4 +1,4 @@
-name: Build Orbit Browser Windows and Linux
+name: Build Orbit Browser Windows
 on:
   workflow_dispatch:
   push:
@@ -54,45 +54,3 @@ jobs:
           make_latest: false
           overwrite_files: true
           files: desktop/dist/*.exe
-  build-linux:
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: x64
-            runner: ubuntu-24.04
-          - arch: arm64
-            runner: ubuntu-24.04-arm
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install Expo app dependencies
-        run: npm install --legacy-peer-deps
-      - name: Export web app
-        run: npx expo export --platform web
-      - name: Prepare desktop package
-        run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install --include=dev
-      - name: Verify Electron installation
-        run: npm --prefix desktop exec -- electron --version
-        env:
-          ELECTRON_DISABLE_SANDBOX: 1
-      - name: Build Linux AppImage
-        run: npm --prefix desktop exec -- electron-builder -- --linux AppImage --${{ matrix.arch }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Orbit-Browser-Linux-${{ matrix.arch }}-AppImage
-          path: desktop/dist/*.AppImage
-          if-no-files-found: error
-          retention-days: 90
-      - name: Publish persistent GitHub Release download
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: orbit-browser-linux-${{ matrix.arch }}-latest
-          name: Orbit Browser Linux ${{ matrix.arch }} (latest)
-          prerelease: true
-          make_latest: false
-          overwrite_files: true
-          files: desktop/dist/*.AppImage
