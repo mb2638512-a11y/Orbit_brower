@@ -24,8 +24,8 @@ jobs:
         run: |
           npm install --no-save --package-lock=false sharp
           node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
-      - name: Install Expo web dependencies
-        run: npx expo install react-dom react-native-web expo-linking expo-constants expo-font
+      - name: Install Expo web dependencies without mutating Expo CLI
+        run: npm install --no-save --package-lock=false --legacy-peer-deps react-dom@19.1.0 react-native-web@^0.21.0 expo-linking@~8.0.8 expo-constants@~18.0.10 expo-font@~14.0.9
       - name: Generate premium Orbit app icon
         run: |
           npm install --no-save --package-lock=false sharp
