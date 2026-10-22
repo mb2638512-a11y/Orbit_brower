@@ -24,6 +24,10 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+      - name: Generate premium Orbit app icon
+        run: |
+          npm install --no-save --package-lock=false sharp
+          node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
       - name: Generate Android native project
         run: npx expo prebuild --platform android --non-interactive
       - name: Build standalone APK with bundled JavaScript
