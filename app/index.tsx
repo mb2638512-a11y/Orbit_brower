@@ -144,7 +144,7 @@ export default function Home() {
         <View style={s.logo}><View style={s.orbitRing}><View style={s.orbitCore}/></View></View>
         <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>EXPLORE BEYOND</Text></View>
         <View style={{flex:1}}/>
-        <Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Toggle incognito mode" onPress={()=>setPrivateMode(v=>!v)} style={[s.square,{backgroundColor:privateMode?"#6558f5":panel}]}><Text style={{color:privateMode?"#ffffff":fg,fontSize:17}}>◉</Text></Pressable><Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Toggle light or dark theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
       </View>
       <View style={[s.address,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
