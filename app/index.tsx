@@ -22,7 +22,7 @@ export default function Home() {
   const [tabs, setTabs] = useState<Tab[]>([{ id: 1, title: "New tab", url: HOME }]);
   const [active, setActive] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [showPanel, setShowPanel] = useState<"none" | "menu" | "bookmarks" | "history" | "engines" | "settings" | "globalai">("none");
+  const [showPanel, setShowPanel] = useState<"none" | "menu" | "bookmarks" | "history" | "engines" | "settings" | "globalai" | "tabs">("none");
   const [aiQuery, setAiQuery] = useState("");
   const [aiEndpoint, setAiEndpoint] = useState("");
   const [aiResult, setAiResult] = useState("");
