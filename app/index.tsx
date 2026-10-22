@@ -141,24 +141,22 @@ export default function Home() {
   return <SafeAreaView style={[s.safe,{backgroundColor:bg}]}>
     <View style={s.top}>
       <View style={s.brandRow}><Pressable accessibilityRole="button" accessibilityLabel="Open Orbit navigation" onPress={()=>setShowPanel(showPanel==="menu"?"none":"menu")} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>☰</Text></Pressable>
-        <View style={s.logo}><View style={s.orbitRing}><View style={s.orbitCore}/></View></View>
-        <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>EXPLORE BEYOND</Text></View>
+        <View style={s.globeLogo}><View style={s.globeLatitude}/><View style={s.globeMeridian}/><View style={s.globeHorizon}/><View style={s.globeStar}/></View>
+        <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>YOUR WORLD, OPEN</Text></View>
         <View style={{flex:1}}/>
         <Pressable accessibilityRole="button" accessibilityLabel="Toggle incognito mode" onPress={()=>setPrivateMode(v=>!v)} style={[s.square,{backgroundColor:privateMode?"#6558f5":panel}]}><Text style={{color:privateMode?"#ffffff":fg,fontSize:17}}>◉</Text></Pressable><Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Toggle light or dark theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
       </View>
       <View style={[s.address,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
-        <Text style={{fontSize:16,color:"#7c8db2"}}>⌕</Text>
-        <TextInput accessibilityLabel="Address and web search" value={input} onChangeText={setInput} onSubmitEditing={()=>go()} returnKeyType="go" autoCapitalize="none" autoCorrect={false} placeholder="Search or enter website" placeholderTextColor={muted} style={[s.input,{color:fg}]}/>
+        <Pressable accessibilityRole="button" accessibilityLabel={"Search engine: " + (SEARCH_ENGINES.find(e=>e.id===searchProvider)?.label || "Google")} onPress={()=>setShowPanel(showPanel==="engines"?"none":"engines")} style={[s.enginePicker,{backgroundColor:bg,borderColor:dark?"#29344e":"#e0e5ef"}]}><Text style={{fontSize:11,color:fg,fontWeight:"800"}}>{(SEARCH_ENGINES.find(e=>e.id===searchProvider)?.label || "Google").replace(" Search","")}</Text><Text style={{fontSize:10,color:muted}}>⌄</Text></Pressable>
+        <TextInput accessibilityLabel="Address and web search" value={input} onChangeText={setInput} onSubmitEditing={()=>go()} returnKeyType="go" autoCapitalize="none" autoCorrect={false} placeholder="Search Google or enter address" placeholderTextColor={muted} style={[s.input,{color:fg}]}/>
         <Pressable accessibilityRole="button" accessibilityLabel="Go to website or search" onPress={()=>go()} style={s.go}><Text style={{color:"white",fontWeight:"700"}}>GO</Text></Pressable>
       </View>
       <View style={s.quickRow}>
-        <Text style={[s.engine,{color:muted}]}>{SEARCH_ENGINES.find(e=>e.id===searchProvider)?.label || "Search"}</Text>
-        <Pressable onPress={()=>setShowPanel(showPanel==="globalai"?"none":"globalai")}><Text style={[s.quick,{color:"#a78bfa",fontWeight:"900"}]}>✦ Global AI</Text></Pressable>
-        <Pressable onPress={addBookmark}><Text style={[s.quick,{color:fg}]}>☆ Save</Text></Pressable>
-        <Pressable onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.quick,{color:"#a78bfa"}]}>↻ Updates</Text></Pressable>
-        <Pressable onPress={()=>setShowPanel(showPanel==="engines"?"none":"engines")}><Text style={[s.quick,{color:fg}]}>⚙ Engines</Text></Pressable>
-        <Pressable onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.quick,{color:privateMode?"#a78bfa":fg}]}>{privateMode?"Private ON":"Incognito"}</Text></Pressable>
+        <Pressable onPress={()=>setShowPanel(showPanel==="globalai"?"none":"globalai")}><Text style={[s.quick,{color:"#a78bfa",fontWeight:"900"}]}>✦ AI Hub</Text></Pressable>
+        <Pressable onPress={addBookmark}><Text style={[s.quick,{color:fg}]}>☆ Save page</Text></Pressable>
+        <Pressable onPress={()=>setShowPanel("history")}><Text style={[s.quick,{color:fg}]}>◷ History</Text></Pressable>
+        <Pressable onPress={()=>setShowPanel("settings")}><Text style={[s.quick,{color:"#a78bfa"}]}>⚙ Settings</Text></Pressable>
       </View>
     </View>
     {showPanel!=="none" ? <View style={[s.panel,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
@@ -203,10 +201,10 @@ export default function Home() {
 }
 const s=StyleSheet.create({
  safe:{flex:1},top:{paddingHorizontal:14,paddingTop:6,paddingBottom:8,gap:10},
- brandRow:{flexDirection:"row",alignItems:"center",gap:10},logo:{width:40,height:40,borderRadius:14,backgroundColor:"#16263c",alignItems:"center",justifyContent:"center",borderWidth:1,borderColor:"#a9c4d7"},orbitRing:{width:25,height:25,borderRadius:13,borderWidth:2,borderColor:"#e9f4fa",alignItems:"center",justifyContent:"center",transform:[{rotate:"-28deg"}]},orbitCore:{width:8,height:8,borderRadius:4,backgroundColor:"#9ce4d6",borderWidth:1,borderColor:"#ffffff"},brand:{fontSize:17,fontWeight:"900",letterSpacing:2},sub:{fontSize:8,letterSpacing:1.2,marginTop:2},square:{width:38,height:38,borderRadius:12,alignItems:"center",justifyContent:"center"},
+ brandRow:{flexDirection:"row",alignItems:"center",gap:10},globeLogo:{width:40,height:40,borderRadius:14,backgroundColor:"#102b4b",alignItems:"center",justifyContent:"center",borderWidth:1,borderColor:"#59c9ed",overflow:"hidden"},globeLatitude:{position:"absolute",width:27,height:12,borderWidth:1.5,borderColor:"#8be3ff",borderRadius:20},globeMeridian:{position:"absolute",width:14,height:28,borderWidth:1.5,borderColor:"#8be3ff",borderRadius:20},globeHorizon:{position:"absolute",width:31,height:2,backgroundColor:"#f5d58b",top:21,transform:[{rotate:"-18deg"}]},globeStar:{position:"absolute",width:5,height:5,borderRadius:3,backgroundColor:"#ffe8a8",top:7,right:7},brand:{fontSize:17,fontWeight:"900",letterSpacing:2},sub:{fontSize:8,letterSpacing:1.2,marginTop:2},square:{width:38,height:38,borderRadius:12,alignItems:"center",justifyContent:"center"},
  tabs:{gap:7,paddingVertical:1},engineChips:{gap:7,paddingVertical:2},engineChip:{borderWidth:1,borderRadius:10,paddingHorizontal:11,paddingVertical:8},tab:{minHeight:34,borderWidth:1,borderRadius:11,paddingHorizontal:10,flexDirection:"row",alignItems:"center",justifyContent:"space-between"},
- address:{height:49,borderWidth:1,borderRadius:15,paddingLeft:12,paddingRight:5,flexDirection:"row",alignItems:"center",gap:8},input:{flex:1,fontSize:13,height:"100%"},go:{backgroundColor:"#6558f5",paddingHorizontal:14,paddingVertical:10,borderRadius:11},
+ address:{height:49,borderWidth:1,borderRadius:15,paddingLeft:5,paddingRight:5,flexDirection:"row",alignItems:"center",gap:6},enginePicker:{minHeight:36,borderWidth:1,borderRadius:10,paddingHorizontal:8,flexDirection:"row",alignItems:"center",justifyContent:"center",gap:4},input:{flex:1,minWidth:0,fontSize:13,height:"100%"},go:{backgroundColor:"#6558f5",paddingHorizontal:14,paddingVertical:10,borderRadius:11},
  quickRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",gap:8},engine:{fontSize:10,flex:1},quick:{fontSize:11,fontWeight:"700"}, aiModes:{flexDirection:"row",flexWrap:"wrap",gap:6,marginTop:12}, aiMode:{paddingHorizontal:10,paddingVertical:9,borderRadius:10},
  webWrap:{flex:1,overflow:"hidden"},bottom:{minHeight:60,borderTopWidth:1,flexDirection:"row",alignItems:"center",justifyContent:"space-around",paddingHorizontal:1,paddingBottom:2},nav:{alignItems:"center",justifyContent:"center",minWidth:48,paddingHorizontal:2,paddingVertical:4,borderRadius:10},navIcon:{fontSize:23,lineHeight:26},navLabel:{fontSize:9,fontWeight:"600"},
- panel:{flex:1,marginHorizontal:12,marginBottom:6,borderWidth:1,borderRadius:16,padding:14},panelHeader:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:12},panelTitle:{fontSize:16,fontWeight:"800"},note:{fontSize:12,lineHeight:18},item:{paddingVertical:11,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"#64748b44"},itemTitle:{fontSize:13,fontWeight:"700"},footer:{textAlign:"center",fontSize:9,paddingVertical:3}
+ panel:{flex:1,width:300,maxWidth:"86%",position:"absolute",left:0,top:0,bottom:0,zIndex:20,elevation:18,marginHorizontal:0,marginBottom:0,borderWidth:1,borderRadius:0,padding:14},panelHeader:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:12},panelTitle:{fontSize:16,fontWeight:"800"},note:{fontSize:12,lineHeight:18},item:{paddingVertical:11,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"#64748b44"},itemTitle:{fontSize:13,fontWeight:"700"},footer:{textAlign:"center",fontSize:9,paddingVertical:3}
 });
