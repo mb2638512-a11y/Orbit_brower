@@ -22,7 +22,7 @@ export default function Home() {
   const [tabs, setTabs] = useState<Tab[]>([{ id: 1, title: "New tab", url: HOME }]);
   const [active, setActive] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [showPanel, setShowPanel] = useState<"none" | "bookmarks" | "history" | "engines" | "settings" | "globalai">("none");
+  const [showPanel, setShowPanel] = useState<"none" | "menu" | "bookmarks" | "history" | "engines" | "settings" | "globalai">("none");
   const [aiQuery, setAiQuery] = useState("");
   const [aiEndpoint, setAiEndpoint] = useState("");
   const [aiResult, setAiResult] = useState("");
@@ -140,7 +140,7 @@ export default function Home() {
   const navButton = (label: string, action: () => void, icon: string) => <Pressable accessibilityRole="button" onPress={action} style={[s.nav,{backgroundColor:panel}]}><Text style={[s.navIcon,{color:fg}]}>{icon}</Text><Text style={[s.navLabel,{color:fg}]}>{label}</Text></Pressable>;
   return <SafeAreaView style={[s.safe,{backgroundColor:bg}]}>
     <View style={s.top}>
-      <View style={s.brandRow}>
+      <View style={s.brandRow}><Pressable accessibilityRole="button" accessibilityLabel="Open Orbit navigation" onPress={()=>setShowPanel(showPanel==="menu"?"none":"menu")} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>☰</Text></Pressable>
         <View style={s.logo}><Text style={s.logoText}>◎</Text></View>
         <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>EXPLORE BEYOND</Text></View>
         <View style={{flex:1}}/>
@@ -167,7 +167,7 @@ export default function Home() {
     </View>
     {showPanel!=="none" ? <View style={[s.panel,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
       <View style={s.panelHeader}><Text style={[s.panelTitle,{color:fg}]}>{showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":showPanel==="engines"?"Available engines":showPanel==="globalai"?"Global AI":showPanel==="bookmarks"?"Bookmarks":showPanel==="history"?"History":"Browser settings"}</Text><Pressable onPress={()=>setShowPanel("none")}><Text style={{color:muted,fontSize:20}}>×</Text></Pressable></View>
-      {showPanel==="globalai" ? <ScrollView keyboardShouldPersistTaps="handled">
+      {showPanel==="menu" ? <View style={s.aiModes}>{[{label:"Home",action:()=>{setShowPanel("none");go(HOME)}},{label:"Bookmarks",action:()=>setShowPanel("bookmarks")},{label:"History",action:()=>setShowPanel("history")},{label:"Search providers",action:()=>setShowPanel("engines")},{label:"Global AI",action:()=>setShowPanel("globalai")},{label:"Appearance & Settings",action:()=>setShowPanel("settings")}].map(item=><Pressable key={item.label} onPress={item.action} style={[s.item,{backgroundColor:bg}]}><Text style={[s.itemTitle,{color:fg}]}>{item.label}</Text></Pressable>)}</View> : showPanel==="globalai" ? <ScrollView keyboardShouldPersistTaps="handled">
         <Text style={[s.note,{color:muted}]}>One hub for multi-engine search, AI model routing, and browser tools. Live provider access requires configured integrations; this panel does not claim 80+ providers are already connected.</Text>
         <View style={s.aiModes}>
           {([{id:"all",label:"All-in-one"},{id:"search",label:"Search"},{id:"models",label:"AI models"},{id:"tools",label:"Browser tools"}] as const).map(m=><Pressable key={m.id} onPress={()=>setAiMode(m.id)} style={[s.aiMode,{backgroundColor:aiMode===m.id?"#6558f5":bg}]}><Text style={{color:aiMode===m.id?"white":fg,fontSize:11,fontWeight:"700"}}>{m.label}</Text></Pressable>)}
@@ -183,13 +183,7 @@ export default function Home() {
         <Text style={[s.note,{color:muted,marginTop:10}]}>Usability: up to 20 tabs per session; bookmarks and history currently reset when Orbit restarts.</Text>
         <Pressable style={s.item} onPress={()=>Linking.openURL(updateUrl)}><Text style={[s.itemTitle,{color:fg}]}>Open platform downloads ↗</Text><Text style={[s.note,{color:muted}]}>Orbit checks GitHub releases when the app starts. Installation may still require your OS or app store approval.</Text></Pressable>
         <Pressable style={s.item} onPress={()=>{setUpdateStatus("Checking for updates…"); Linking.openURL("https://github.com/mb2638512-a11y/Orbit_brower/actions")}}><Text style={[s.itemTitle,{color:fg}]}>Build status and updates</Text></Pressable>
-      </> : showPanel==="engines" ? <>
-        <Text style={[s.note,{color:muted}]}>Engine support depends on the operating system. Orbit cannot switch rendering engines unless the native engine is bundled and integrated.</Text>
-        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Android System WebView</Text><Text style={[s.note,{color:muted}]}>Current Android renderer</Text></View>
-        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Apple WebKit</Text><Text style={[s.note,{color:muted}]}>iOS renderer; required platform engine</Text></View>
-        <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Chromium / Electron</Text><Text style={[s.note,{color:muted}]}>Desktop shell renderer</Text></View>
-        <View style={s.item}><Text style={[s.itemTitle,{color:muted}]}>Firefox Gecko</Text><Text style={[s.note,{color:muted}]}>Not integrated yet — not selectable</Text></View>
-      </> : showPanel==="bookmarks" || showPanel==="history" ? (showPanel==="bookmarks"?bookmarks:history).length===0 ? <Text style={[s.note,{color:muted}]}>Nothing saved yet.</Text> : (showPanel==="bookmarks"?bookmarks:history).map((item,i)=><Pressable key={item.url+i} onPress={()=>go(item.url)} style={s.item}><Text numberOfLines={1} style={[s.itemTitle,{color:fg}]}>{item.title}</Text><Text numberOfLines={1} style={[s.note,{color:muted}]}>{item.url}</Text></Pressable>) : <>
+      </> : showPanel==="engines" ? <><Text style={[s.note,{color:muted}]}>Choose from 131 search providers. Orbit opens the provider results page; availability and login requirements vary.</Text><View style={s.aiModes}>{SEARCH_ENGINES.map(p=><Pressable key={p.id} onPress={()=>{setSearchProvider(p.id);setShowPanel("none")}} style={[s.aiMode,{backgroundColor:searchProvider===p.id?"#6558f5":bg}]}><Text style={{color:searchProvider===p.id?"white":fg,fontSize:11,fontWeight:"700"}}>{p.label}{searchProvider===p.id?" ✓":""}</Text></Pressable>)}</View></> : showPanel==="bookmarks" || showPanel==="history" ? (showPanel==="bookmarks"?bookmarks:history).length===0 ? <Text style={[s.note,{color:muted}]}>Nothing saved yet.</Text> : (showPanel==="bookmarks"?bookmarks:history).map((item,i)=><Pressable key={item.url+i} onPress={()=>go(item.url)} style={s.item}><Text numberOfLines={1} style={[s.itemTitle,{color:fg}]}>{item.title}</Text><Text numberOfLines={1} style={[s.note,{color:muted}]}>{item.url}</Text></Pressable>) : <>
         <Pressable style={s.item} onPress={()=>setDark(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Appearance: {dark?"Dark":"Light"}</Text><Text style={[s.note,{color:muted}]}>Switch between a dark and light browser theme</Text></Pressable>
         <View style={s.item}><Text style={[s.itemTitle,{color:fg}]}>Default search provider</Text><Text style={[s.note,{color:muted}]}>Used when you type words instead of a website address</Text><View style={s.aiModes}>{SEARCH_ENGINES.map(p=><Pressable key={p.id} onPress={()=>setSearchProvider(p.id)} style={[s.aiMode,{backgroundColor:searchProvider===p.id?"#6558f5":bg}]}><Text style={{color:searchProvider===p.id?"white":fg,fontSize:11,fontWeight:"700"}}>{p.label}{searchProvider===p.id?" ✓":""}</Text></Pressable>)}</View></View>
         <Pressable style={s.item} onPress={()=>setPrivateMode(v=>!v)}><Text style={[s.itemTitle,{color:fg}]}>Private mode: {privateMode?"On":"Off"}</Text><Text style={[s.note,{color:muted}]}>Stops Orbit's in-memory history list from recording new visits. Websites and OS-level logging may still retain data.</Text></Pressable>
