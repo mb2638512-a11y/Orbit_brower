@@ -26,6 +26,10 @@ jobs:
           node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
       - name: Install Expo web dependencies
         run: npx expo install react-dom react-native-web expo-linking expo-constants expo-font
+      - name: Generate premium Orbit app icon
+        run: |
+          npm install --no-save --package-lock=false sharp
+          node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
       - name: Export web app
         run: npx expo export --platform web
       - name: Prepare desktop package
