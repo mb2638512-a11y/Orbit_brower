@@ -23,9 +23,44 @@ jobs:
       - name: Generate iOS native project
         run: npx expo prebuild --platform ios --non-interactive
       - name: Resolve native dependencies
-        run: xcodebuild -resolvePackageDependencies -workspace ios/OrbitBrowser.xcworkspace -scheme OrbitBrowser
+        run: |
+          WORKSPACE=$(find ios -maxdepth 2 -name '*.xcworkspace' -print -quit)
+          test -n "$WORKSPACE"
+          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" | sed -n '/Schemes:/,$p' | grep -E '^[[:space:]]+[A-Za-z0-9_-]+
+      - name: Verify simulator app bundle
+        run: |
+          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP_PATH"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Info.plist"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Info.plist"
+      - name: Package simulator app
+        run: |
+          mkdir -p builds/ios
+          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" builds/ios/Orbit-Browser-iOS-Simulator.zip
+          unzip -t builds/ios/Orbit-Browser-iOS-Simulator.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Orbit-Browser-iOS-Simulator
+          path: builds/ios/Orbit-Browser-iOS-Simulator.zip
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish persistent GitHub Release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: orbit-browser-ios-simulator-latest
+          name: Orbit Browser iOS Simulator (latest)
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: builds/ios/Orbit-Browser-iOS-Simulator.zip
+ | head -1 | xargs)
+          test -n "$SCHEME"
+          echo "IOS_WORKSPACE=$WORKSPACE" >> "$GITHUB_ENV"
+          echo "IOS_SCHEME=$SCHEME" >> "$GITHUB_ENV"
+          xcodebuild -resolvePackageDependencies -workspace "$WORKSPACE" -scheme "$SCHEME"
       - name: Build iOS Simulator app
-        run: xcodebuild -workspace ios/OrbitBrowser.xcworkspace -scheme OrbitBrowser -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO
+        run: xcodebuild -workspace "$IOS_WORKSPACE" -scheme "$IOS_SCHEME" -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO
       - name: Verify simulator app bundle
         run: |
           APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
