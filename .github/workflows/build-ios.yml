@@ -16,6 +16,10 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+      - name: Generate premium Orbit app icon
+        run: |
+          npm install --no-save --package-lock=false sharp
+          node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
       - name: Generate iOS native project
         run: npx expo prebuild --platform ios --non-interactive
       - name: Resolve native dependencies
