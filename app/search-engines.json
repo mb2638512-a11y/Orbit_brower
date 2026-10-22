@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "count": 131,
-  "description": "Search shortcut catalog. URLs open third-party providers; this does not imply aggregation, API access, dark-mode control, or guaranteed provider availability.",
+  "count": 130,
+  "description": "Search shortcut catalog. The default is Google; choose an available provider from the compact selector beside the address/search field. URLs open third-party provider results; availability and features vary.",
   "engines": [
     {
       "id": "google0",
@@ -24,14 +24,6 @@
       "name": "DuckDuckGo",
       "category": "web",
       "template": "https://duckduckgo.com/?q=",
-      "mode": "external-search",
-      "requiresAuth": false
-    },
-    {
-      "id": "bravesearch3",
-      "name": "Brave Search",
-      "category": "web",
-      "template": "https://search.brave.com/search?q=",
       "mode": "external-search",
       "requiresAuth": false
     },
