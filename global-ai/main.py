@@ -48,11 +48,6 @@ async def search(request: Request, q: str = Query(min_length=1, max_length=300))
 @app.post("/api/ai/chat")
 async def chat(body: ChatRequest, request: Request):
     rate_limit(request)
-    base = os.getenv("AI_BASE_URL", "").rstrip("/")
-    key = os.getenv("AI_API_KEY", "")
-    model = body.model or os.getenv("AI_MODEL", "")
-    if not base or not key or not model:
-        raise HTTPException(status_code=503, detail="AI is not configured. Set AI_BASE_URL, AI_API_KEY and AI_MODEL on the server.")
     safe_messages = []
     for m in body.messages:
         role = m.get("role")
@@ -60,6 +55,11 @@ async def chat(body: ChatRequest, request: Request):
         if role not in ("system", "user", "assistant") or not isinstance(content, str):
             raise HTTPException(status_code=422, detail="Messages must have a valid role and text content.")
         safe_messages.append({"role": role, "content": content[:12000]})
+    base = os.getenv("AI_BASE_URL", "").rstrip("/")
+    key = os.getenv("AI_API_KEY", "")
+    model = body.model or os.getenv("AI_MODEL", "")
+    if not base or not key or not model:
+        raise HTTPException(status_code=503, detail="AI is not configured. Set AI_BASE_URL, AI_API_KEY and AI_MODEL on the server.")
     try:
         async with httpx.AsyncClient(timeout=45, follow_redirects=False) as client:
             response = await client.post(base + "/chat/completions", headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"}, json={"model": model, "messages": safe_messages, "temperature": 0.3})
