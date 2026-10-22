@@ -140,8 +140,8 @@ export default function Home() {
   return <SafeAreaView style={[s.safe,{backgroundColor:bg}]}>
     <View style={s.top}>
       <View style={s.brandRow}>
-        <View style={s.logo}><Text style={s.logoText}>O</Text></View>
-        <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>PRIVATE • FAST • SIMPLE</Text></View>
+        <View style={s.logo}><Text style={s.logoText}>◎</Text></View>
+        <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>EXPLORE BEYOND</Text></View>
         <View style={{flex:1}}/>
         <Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Toggle light or dark theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
