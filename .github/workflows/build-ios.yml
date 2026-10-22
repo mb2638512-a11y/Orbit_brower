@@ -3,7 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/build-ios.yml', 'app/**', 'package.json', 'app.json']
+    paths:
+      - '.github/workflows/build-ios.yml'
+      - 'app/**'
+      - 'assets/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app.json'
 permissions:
   contents: write
 jobs:
@@ -14,63 +20,45 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-      - name: Generate premium Orbit app icon
+      - name: Generate app icon
         run: |
           npm install --no-save --package-lock=false sharp
           node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
       - name: Generate iOS native project
         run: npx expo prebuild --platform ios --non-interactive
-      - name: Resolve native dependencies
+      - name: Resolve workspace and scheme
+        shell: bash
         run: |
-          WORKSPACE=$(find ios -maxdepth 2 -name '*.xcworkspace' -print -quit)
+          set -euo pipefail
+          WORKSPACE="$(find ios -maxdepth 3 -name '*.xcworkspace' -print -quit)"
           test -n "$WORKSPACE"
-          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" | sed -n '/Schemes:/,$p' | grep -E '^[[:space:]]+[A-Za-z0-9_-]+
-      - name: Verify simulator app bundle
-        run: |
-          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
-          test -n "$APP_PATH"
-          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Info.plist"
-          /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Info.plist"
-      - name: Package simulator app
-        run: |
-          mkdir -p builds/ios
-          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
-          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" builds/ios/Orbit-Browser-iOS-Simulator.zip
-          unzip -t builds/ios/Orbit-Browser-iOS-Simulator.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Orbit-Browser-iOS-Simulator
-          path: builds/ios/Orbit-Browser-iOS-Simulator.zip
-          if-no-files-found: error
-          retention-days: 90
-      - name: Publish persistent GitHub Release download
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: orbit-browser-ios-simulator-latest
-          name: Orbit Browser iOS Simulator (latest)
-          prerelease: true
-          make_latest: false
-          overwrite_files: true
-          files: builds/ios/Orbit-Browser-iOS-Simulator.zip
- | head -1 | xargs)
-          test -n "$SCHEME"
+          SCHEME="$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/{found=1;next} found && NF {gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print; exit}')"
+          if [ -z "$SCHEME" ]; then
+            SCHEME="$(basename "$WORKSPACE" .xcworkspace)"
+          fi
           echo "IOS_WORKSPACE=$WORKSPACE" >> "$GITHUB_ENV"
           echo "IOS_SCHEME=$SCHEME" >> "$GITHUB_ENV"
-          xcodebuild -resolvePackageDependencies -workspace "$WORKSPACE" -scheme "$SCHEME"
+          echo "Using workspace: $WORKSPACE"
+          echo "Using scheme: $SCHEME"
+      - name: Resolve native package dependencies
+        run: xcodebuild -resolvePackageDependencies -workspace "$IOS_WORKSPACE" -scheme "$IOS_SCHEME"
       - name: Build iOS Simulator app
         run: xcodebuild -workspace "$IOS_WORKSPACE" -scheme "$IOS_SCHEME" -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO
       - name: Verify simulator app bundle
+        shell: bash
         run: |
-          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
+          set -euo pipefail
+          APP_PATH="$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)"
           test -n "$APP_PATH"
           /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Info.plist"
           /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Info.plist"
       - name: Package simulator app
         run: |
           mkdir -p builds/ios
-          APP_PATH=$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
+          APP_PATH="$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)"
           ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" builds/ios/Orbit-Browser-iOS-Simulator.zip
           unzip -t builds/ios/Orbit-Browser-iOS-Simulator.zip
       - uses: actions/upload-artifact@v4
@@ -79,7 +67,7 @@ jobs:
           path: builds/ios/Orbit-Browser-iOS-Simulator.zip
           if-no-files-found: error
           retention-days: 90
-      - name: Publish persistent GitHub Release download
+      - name: Publish simulator build
         uses: softprops/action-gh-release@v2
         with:
           tag_name: orbit-browser-ios-simulator-latest
