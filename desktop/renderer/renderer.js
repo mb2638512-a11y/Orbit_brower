@@ -10,7 +10,7 @@ const themeButton=document.getElementById("themeToggle");
 function applyTheme(theme){document.body.classList.toggle("light",theme==="light");if(themeButton)themeButton.textContent=theme==="light"?"☾ Dark mode":"☀ Light mode";try{localStorage.setItem("orbit.theme.v1",theme)}catch{}}
 let savedTheme="dark";try{savedTheme=localStorage.getItem("orbit.theme.v1")||"dark"}catch{}applyTheme(savedTheme);
 themeButton?.addEventListener("click",()=>applyTheme(document.body.classList.contains("light")?"dark":"light"));
-document.querySelectorAll("#sidebar [data-engine]").forEach(button=>button.addEventListener("click",()=>{const engine=button.dataset.engine;const select=document.getElementById("engineSelect");if(select)select.value=engine;const q=input.value.trim();if(q)go(q);else{input.placeholder="Search with "+button.textContent.trim()+" or enter a URL";input.focus()}}));
+document.querySelectorAll("#sidebar [data-engine]").forEach(button=>button.addEventListener("click",()=>{const engine=button.dataset.engine;const aliases={google:"google0",bing:"bing1",duckduckgo:"duckduckgo2",brave:"bravesearch3",wikipedia:"wikipedia26"};const select=document.getElementById("engineSelect");if(select)select.value=aliases[engine]||engine;const q=input.value.trim();if(q)go(q);else{input.placeholder="Search with "+button.textContent.trim()+" or enter a URL";input.focus()}}));
 document.getElementById("sideHome")?.addEventListener("click",()=>document.getElementById("home").click());
 document.getElementById("sideBookmarks")?.addEventListener("click",()=>showList("bookmarks"));
 document.getElementById("sideHistory")?.addEventListener("click",()=>showList("history"));
