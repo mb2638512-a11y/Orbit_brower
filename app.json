@@ -1,14 +1,25 @@
 {
   "expo": {
-    "name": "Orbit Browser",
+    "name": "Orbit",
     "slug": "orbit-browser",
     "scheme": "orbitbrowser",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "plugins": ["expo-router"],
-    "android": { "package": "com.orbitbrowser.app" },
-    "ios": { "bundleIdentifier": "com.orbitbrowser.app" }
+    "plugins": [
+      "expo-router"
+    ],
+    "android": {
+      "package": "com.orbitbrowser.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/orbit-icon.png",
+        "backgroundColor": "#101d2d"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.orbitbrowser.app"
+    },
+    "icon": "./assets/orbit-icon.png"
   }
 }
