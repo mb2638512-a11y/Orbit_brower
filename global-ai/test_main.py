@@ -25,3 +25,9 @@ def test_chat_requires_server_side_credentials(monkeypatch):
 def test_chat_rejects_invalid_role():
     response = client.post("/api/ai/chat", json={"messages": [{"role": "tool", "content": "hello"}]})
     assert response.status_code == 422
+
+
+def test_research_requires_search_backend(monkeypatch):
+    monkeypatch.delenv("SEARXNG_URL", raising=False)
+    response = client.post("/api/ai/research", json={"messages": [{"role": "user", "content": "latest browser engines"}]})
+    assert response.status_code == 503
