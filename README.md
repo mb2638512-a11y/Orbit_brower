@@ -71,6 +71,10 @@ A self-hosted API and SearXNG compose stack are in `global-ai/`. The API exposes
 
 SearXNG's JSON API requires `json` to be enabled in `search.formats`; this repository's settings file enables it. See the [official SearXNG Search API docs](https://docs.searxng.org/dev/search_api.html).
 
+### Local Windows setup
+
+For a no-cost first test on your Windows PC, follow [`global-ai/LOCAL-WINDOWS-SETUP.md`](global-ai/LOCAL-WINDOWS-SETUP.md). Keep the API bound to `127.0.0.1` and do not expose it publicly until authentication, HTTPS, restrictive CORS, and abuse protection are configured.
+
 ## Known limitations
 
 Orbit Browser is still an early browser-shell prototype, not a production-grade browser. The desktop renderer currently uses an iframe and some websites block embedding; a production desktop build needs a native browser surface, stronger navigation controls, download handling, permission controls, persisted data, security review, and signed release builds.
