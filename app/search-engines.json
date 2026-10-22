@@ -1,0 +1,1055 @@
+{
+  "version": 1,
+  "count": 131,
+  "description": "Search shortcut catalog. URLs open third-party providers; this does not imply aggregation, API access, dark-mode control, or guaranteed provider availability.",
+  "engines": [
+    {
+      "id": "google0",
+      "name": "Google",
+      "category": "web",
+      "template": "https://www.google.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bing1",
+      "name": "Bing",
+      "category": "web",
+      "template": "https://www.bing.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "duckduckgo2",
+      "name": "DuckDuckGo",
+      "category": "web",
+      "template": "https://duckduckgo.com/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bravesearch3",
+      "name": "Brave Search",
+      "category": "web",
+      "template": "https://search.brave.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "yahoo4",
+      "name": "Yahoo",
+      "category": "web",
+      "template": "https://search.yahoo.com/search?p=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "ecosia5",
+      "name": "Ecosia",
+      "category": "web",
+      "template": "https://www.ecosia.org/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "startpage6",
+      "name": "Startpage",
+      "category": "web",
+      "template": "https://www.startpage.com/sp/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "qwant7",
+      "name": "Qwant",
+      "category": "web",
+      "template": "https://www.qwant.com/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "mojeek8",
+      "name": "Mojeek",
+      "category": "web",
+      "template": "https://www.mojeek.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "swisscows9",
+      "name": "Swisscows",
+      "category": "web",
+      "template": "https://swisscows.com/en/web?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "kagi10",
+      "name": "Kagi",
+      "category": "web",
+      "template": "https://kagi.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": true
+    },
+    {
+      "id": "metager11",
+      "name": "MetaGer",
+      "category": "web",
+      "template": "https://metager.org/meta/meta.ger3?eingabe=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "searxng12",
+      "name": "SearXNG",
+      "category": "metasearch",
+      "template": "https://searx.be/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "yep13",
+      "name": "Yep",
+      "category": "web",
+      "template": "https://yep.com/web?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "youcom14",
+      "name": "You.com",
+      "category": "web",
+      "template": "https://you.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "yandex15",
+      "name": "Yandex",
+      "category": "web",
+      "template": "https://yandex.com/search/?text=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "baidu16",
+      "name": "Baidu",
+      "category": "web",
+      "template": "https://www.baidu.com/s?wd=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "naver17",
+      "name": "Naver",
+      "category": "web",
+      "template": "https://search.naver.com/search.naver?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "daum18",
+      "name": "Daum",
+      "category": "web",
+      "template": "https://search.daum.net/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "sogou19",
+      "name": "Sogou",
+      "category": "web",
+      "template": "https://sogou.com/web?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "enginesearch20",
+      "name": "360 Search",
+      "category": "web",
+      "template": "https://www.so.com/s?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "ask21",
+      "name": "Ask",
+      "category": "web",
+      "template": "https://www.ask.com/web?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "aolsearch22",
+      "name": "AOL Search",
+      "category": "web",
+      "template": "https://search.aol.com/aol/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "lycos23",
+      "name": "Lycos",
+      "category": "web",
+      "template": "https://search.lycos.com/web/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "dogpile24",
+      "name": "Dogpile",
+      "category": "web",
+      "template": "https://www.dogpile.com/serp?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "webcrawler25",
+      "name": "WebCrawler",
+      "category": "web",
+      "template": "https://www.webcrawler.com/serp?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "wikipedia26",
+      "name": "Wikipedia",
+      "category": "reference",
+      "template": "https://en.wikipedia.org/wiki/Special:Search?search=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "wikidata27",
+      "name": "Wikidata",
+      "category": "reference",
+      "template": "https://www.wikidata.org/w/index.php?search=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "britannica28",
+      "name": "Britannica",
+      "category": "reference",
+      "template": "https://www.britannica.com/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "internetarchive29",
+      "name": "Internet Archive",
+      "category": "archive",
+      "template": "https://archive.org/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlescholar30",
+      "name": "Google Scholar",
+      "category": "academic",
+      "template": "https://scholar.google.com/scholar?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "semanticscholar31",
+      "name": "Semantic Scholar",
+      "category": "academic",
+      "template": "https://www.semanticscholar.org/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "pubmed32",
+      "name": "PubMed",
+      "category": "academic",
+      "template": "https://pubmed.ncbi.nlm.nih.gov/?term=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "crossref33",
+      "name": "Crossref",
+      "category": "academic",
+      "template": "https://search.crossref.org/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "openalex34",
+      "name": "OpenAlex",
+      "category": "academic",
+      "template": "https://openalex.org/works?search=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "arxiv35",
+      "name": "arXiv",
+      "category": "academic",
+      "template": "https://arxiv.org/search/?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "core36",
+      "name": "CORE",
+      "category": "academic",
+      "template": "https://core.ac.uk/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "base37",
+      "name": "BASE",
+      "category": "academic",
+      "template": "https://www.base-search.net/Search/Results?lookfor=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "doaj38",
+      "name": "DOAJ",
+      "category": "academic",
+      "template": "https://doaj.org/search/articles?source=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "sciencedirect39",
+      "name": "ScienceDirect",
+      "category": "academic",
+      "template": "https://www.sciencedirect.com/search?qs=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "springerlink40",
+      "name": "SpringerLink",
+      "category": "academic",
+      "template": "https://link.springer.com/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "ieeexplore41",
+      "name": "IEEE Xplore",
+      "category": "academic",
+      "template": "https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "acmdigitallibrary42",
+      "name": "ACM Digital Library",
+      "category": "academic",
+      "template": "https://dl.acm.org/action/doSearch?AllField=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "paperswithcode43",
+      "name": "Papers with Code",
+      "category": "academic",
+      "template": "https://paperswithcode.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "openlibrary44",
+      "name": "Open Library",
+      "category": "books",
+      "template": "https://openlibrary.org/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlebooks45",
+      "name": "Google Books",
+      "category": "books",
+      "template": "https://books.google.com/books?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "goodreads46",
+      "name": "Goodreads",
+      "category": "books",
+      "template": "https://www.goodreads.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "youtube47",
+      "name": "YouTube",
+      "category": "video",
+      "template": "https://www.youtube.com/results?search_query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "vimeo48",
+      "name": "Vimeo",
+      "category": "video",
+      "template": "https://vimeo.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "dailymotion49",
+      "name": "Dailymotion",
+      "category": "video",
+      "template": "https://www.dailymotion.com/search/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "peertube50",
+      "name": "PeerTube",
+      "category": "video",
+      "template": "https://sepiasearch.org/?search=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "tiktok51",
+      "name": "TikTok",
+      "category": "video",
+      "template": "https://www.tiktok.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "reddit52",
+      "name": "Reddit",
+      "category": "social",
+      "template": "https://www.reddit.com/search/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "hackernews53",
+      "name": "Hacker News",
+      "category": "social",
+      "template": "https://hn.algolia.com/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "lobsters54",
+      "name": "Lobsters",
+      "category": "social",
+      "template": "https://lobste.rs/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "stackoverflow55",
+      "name": "Stack Overflow",
+      "category": "developer",
+      "template": "https://stackoverflow.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "github56",
+      "name": "GitHub",
+      "category": "developer",
+      "template": "https://github.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "gitlab57",
+      "name": "GitLab",
+      "category": "developer",
+      "template": "https://gitlab.com/search?search=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "codeberg58",
+      "name": "Codeberg",
+      "category": "developer",
+      "template": "https://codeberg.org/explore/repos?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "sourceforge59",
+      "name": "SourceForge",
+      "category": "developer",
+      "template": "https://sourceforge.net/directory/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "npm60",
+      "name": "npm",
+      "category": "developer",
+      "template": "https://www.npmjs.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "pypi61",
+      "name": "PyPI",
+      "category": "developer",
+      "template": "https://pypi.org/search/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "dockerhub62",
+      "name": "Docker Hub",
+      "category": "developer",
+      "template": "https://hub.docker.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "mdn63",
+      "name": "MDN",
+      "category": "developer",
+      "template": "https://developer.mozilla.org/en-US/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "devdocs64",
+      "name": "DevDocs",
+      "category": "developer",
+      "template": "https://devdocs.io/#q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "caniuse65",
+      "name": "Can I use",
+      "category": "developer",
+      "template": "https://caniuse.com/?search=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "rustdocs66",
+      "name": "Rust docs",
+      "category": "developer",
+      "template": "https://docs.rs/releases/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "gopackages67",
+      "name": "Go packages",
+      "category": "developer",
+      "template": "https://pkg.go.dev/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "microsoftlearn68",
+      "name": "Microsoft Learn",
+      "category": "developer",
+      "template": "https://learn.microsoft.com/en-us/search/?terms=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlemaps69",
+      "name": "Google Maps",
+      "category": "maps",
+      "template": "https://www.google.com/maps/search/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "openstreetmap70",
+      "name": "OpenStreetMap",
+      "category": "maps",
+      "template": "https://www.openstreetmap.org/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bingmaps71",
+      "name": "Bing Maps",
+      "category": "maps",
+      "template": "https://www.bing.com/maps?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googleimages72",
+      "name": "Google Images",
+      "category": "images",
+      "template": "https://www.google.com/search?tbm=isch&q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bingimages73",
+      "name": "Bing Images",
+      "category": "images",
+      "template": "https://www.bing.com/images/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "duckduckgoimages74",
+      "name": "DuckDuckGo Images",
+      "category": "images",
+      "template": "https://duckduckgo.com/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "flickr75",
+      "name": "Flickr",
+      "category": "images",
+      "template": "https://www.flickr.com/search/?text=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "unsplash76",
+      "name": "Unsplash",
+      "category": "images",
+      "template": "https://unsplash.com/s/photos/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "pexels77",
+      "name": "Pexels",
+      "category": "images",
+      "template": "https://www.pexels.com/search/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "pixabay78",
+      "name": "Pixabay",
+      "category": "images",
+      "template": "https://pixabay.com/images/search/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlenews79",
+      "name": "Google News",
+      "category": "news",
+      "template": "https://news.google.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bingnews80",
+      "name": "Bing News",
+      "category": "news",
+      "template": "https://www.bing.com/news/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "reuters81",
+      "name": "Reuters",
+      "category": "news",
+      "template": "https://www.reuters.com/site-search/?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "apnews82",
+      "name": "AP News",
+      "category": "news",
+      "template": "https://apnews.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "theguardian83",
+      "name": "The Guardian",
+      "category": "news",
+      "template": "https://www.theguardian.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "financialtimes84",
+      "name": "Financial Times",
+      "category": "news",
+      "template": "https://www.ft.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "amazon85",
+      "name": "Amazon",
+      "category": "shopping",
+      "template": "https://www.amazon.com/s?k=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "ebay86",
+      "name": "eBay",
+      "category": "shopping",
+      "template": "https://www.ebay.com/sch/i.html?_nkw=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "etsy87",
+      "name": "Etsy",
+      "category": "shopping",
+      "template": "https://www.etsy.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "walmart88",
+      "name": "Walmart",
+      "category": "shopping",
+      "template": "https://www.walmart.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "aliexpress89",
+      "name": "AliExpress",
+      "category": "shopping",
+      "template": "https://www.aliexpress.com/w/wholesale-",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googleshopping90",
+      "name": "Google Shopping",
+      "category": "shopping",
+      "template": "https://www.google.com/search?tbm=shop&q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "pricerunner91",
+      "name": "PriceRunner",
+      "category": "shopping",
+      "template": "https://www.pricerunner.com/results?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "keepa92",
+      "name": "Keepa",
+      "category": "shopping",
+      "template": "https://keepa.com/#!search/1-",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "indeed93",
+      "name": "Indeed",
+      "category": "jobs",
+      "template": "https://www.indeed.com/jobs?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "linkedinjobs94",
+      "name": "LinkedIn Jobs",
+      "category": "jobs",
+      "template": "https://www.linkedin.com/jobs/search/?keywords=",
+      "mode": "external-search",
+      "requiresAuth": true
+    },
+    {
+      "id": "glassdoor95",
+      "name": "Glassdoor",
+      "category": "jobs",
+      "template": "https://www.glassdoor.com/Job/jobs.htm?sc.keyword=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "wellfound96",
+      "name": "Wellfound",
+      "category": "jobs",
+      "template": "https://wellfound.com/jobs",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googleflights97",
+      "name": "Google Flights",
+      "category": "travel",
+      "template": "https://www.google.com/travel/flights?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bookingcom98",
+      "name": "Booking.com",
+      "category": "travel",
+      "template": "https://www.booking.com/searchresults.html?ss=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "tripadvisor99",
+      "name": "Tripadvisor",
+      "category": "travel",
+      "template": "https://www.tripadvisor.com/Search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "wolframalpha100",
+      "name": "WolframAlpha",
+      "category": "knowledge",
+      "template": "https://www.wolframalpha.com/input?i=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "internetencyclopediaofphilosophy101",
+      "name": "Internet Encyclopedia of Philosophy",
+      "category": "reference",
+      "template": "https://iep.utm.edu/?s=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "mastodon102",
+      "name": "Mastodon",
+      "category": "social",
+      "template": "https://mastodon.social/explore",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "producthunt103",
+      "name": "Product Hunt",
+      "category": "technology",
+      "template": "https://www.producthunt.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "crunchbase104",
+      "name": "Crunchbase",
+      "category": "business",
+      "template": "https://www.crunchbase.com/textsearch?q=",
+      "mode": "external-search",
+      "requiresAuth": true
+    },
+    {
+      "id": "fandom105",
+      "name": "Fandom",
+      "category": "reference",
+      "template": "https://www.fandom.com/?s=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "mdpi106",
+      "name": "MDPI",
+      "category": "academic",
+      "template": "https://www.mdpi.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "jstor107",
+      "name": "JSTOR",
+      "category": "academic",
+      "template": "https://www.jstor.org/action/doBasicSearch?Query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "eric108",
+      "name": "ERIC",
+      "category": "academic",
+      "template": "https://eric.ed.gov/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "worldcat109",
+      "name": "WorldCat",
+      "category": "books",
+      "template": "https://search.worldcat.org/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlepatents110",
+      "name": "Google Patents",
+      "category": "research",
+      "template": "https://patents.google.com/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "uspto111",
+      "name": "USPTO",
+      "category": "research",
+      "template": "https://ppubs.uspto.gov/pubwebapp/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlevideos112",
+      "name": "Google Videos",
+      "category": "video",
+      "template": "https://www.google.com/search?tbm=vid&q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "bingvideos113",
+      "name": "Bing Videos",
+      "category": "video",
+      "template": "https://www.bing.com/videos/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "pinterest114",
+      "name": "Pinterest",
+      "category": "images",
+      "template": "https://www.pinterest.com/search/pins/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "instagram115",
+      "name": "Instagram",
+      "category": "social",
+      "template": "https://www.instagram.com/explore/search/keyword/?q=",
+      "mode": "external-search",
+      "requiresAuth": true
+    },
+    {
+      "id": "facebook116",
+      "name": "Facebook",
+      "category": "social",
+      "template": "https://www.facebook.com/search/top/?q=",
+      "mode": "external-search",
+      "requiresAuth": true
+    },
+    {
+      "id": "xsearch117",
+      "name": "X Search",
+      "category": "social",
+      "template": "https://x.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "quora118",
+      "name": "Quora",
+      "category": "social",
+      "template": "https://www.quora.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "stackexchange119",
+      "name": "Stack Exchange",
+      "category": "developer",
+      "template": "https://stackexchange.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "codepen120",
+      "name": "CodePen",
+      "category": "developer",
+      "template": "https://codepen.io/search/pens?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "replit121",
+      "name": "Replit",
+      "category": "developer",
+      "template": "https://replit.com/search?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "khanacademy122",
+      "name": "Khan Academy",
+      "category": "education",
+      "template": "https://www.khanacademy.org/search?page_search_query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "coursera123",
+      "name": "Coursera",
+      "category": "education",
+      "template": "https://www.coursera.org/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googletranslate124",
+      "name": "Google Translate",
+      "category": "utility",
+      "template": "https://translate.google.com/?sl=auto&tl=en&text=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googlefinance125",
+      "name": "Google Finance",
+      "category": "finance",
+      "template": "https://www.google.com/finance/quote/",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "investingcom126",
+      "name": "Investing.com",
+      "category": "finance",
+      "template": "https://www.investing.com/search/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "coingecko127",
+      "name": "CoinGecko",
+      "category": "finance",
+      "template": "https://www.coingecko.com/en/search?query=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "coinmarketcap128",
+      "name": "CoinMarketCap",
+      "category": "finance",
+      "template": "https://coinmarketcap.com/search/?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "openstreetmapnominatim129",
+      "name": "OpenStreetMap Nominatim",
+      "category": "maps",
+      "template": "https://nominatim.openstreetmap.org/ui/search.html?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    },
+    {
+      "id": "googletrends130",
+      "name": "Google Trends",
+      "category": "research",
+      "template": "https://trends.google.com/trends/explore?q=",
+      "mode": "external-search",
+      "requiresAuth": false
+    }
+  ]
+}
