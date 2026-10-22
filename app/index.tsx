@@ -31,7 +31,7 @@ export default function Home() {
   const [bookmarks, setBookmarks] = useState<Tab[]>([]);
   const [history, setHistory] = useState<Tab[]>([]);
   const [storageReady, setStorageReady] = useState(false);
-  const [searchProvider, setSearchProvider] = useState<string>("google");
+  const [searchProvider, setSearchProvider] = useState<string>("google0");
   const [downloadsHelp, setDownloadsHelp] = useState("");
   const [privateMode, setPrivateMode] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("Checking for updates…");
