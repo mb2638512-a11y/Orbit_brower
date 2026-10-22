@@ -3,12 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['app/**', 'package.json', 'app.json', '.github/workflows/build-android.yml']
+    paths: ['app/**', 'assets/**', 'package.json', 'package-lock.json', 'app.json', '.github/workflows/build-android.yml']
 permissions:
   contents: write
 jobs:
   android-apk:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
