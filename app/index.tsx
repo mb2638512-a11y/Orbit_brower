@@ -7,7 +7,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const HOME = "https://www.google.com";
 type Tab = { id: number; title: string; url: string };
-const SEARCH_ENGINES = [{id:"google",label:"Google",url:"https://www.google.com/search?q="},{id:"bing",label:"Bing",url:"https://www.bing.com/search?q="},{id:"duckduckgo",label:"DuckDuckGo",url:"https://duckduckgo.com/?q="},{id:"brave",label:"Brave",url:"https://search.brave.com/search?q="},{id:"yahoo",label:"Yahoo",url:"https://search.yahoo.com/search?p="},{id:"ecosia",label:"Ecosia",url:"https://www.ecosia.org/search?q="},{id:"startpage",label:"Startpage",url:"https://www.startpage.com/sp/search?query="},{id:"qwant",label:"Qwant",url:"https://www.qwant.com/?q="},{id:"yandex",label:"Yandex",url:"https://yandex.com/search/?text="},{id:"baidu",label:"Baidu",url:"https://www.baidu.com/s?wd="},{id:"naver",label:"Naver",url:"https://search.naver.com/search.naver?query="},{id:"wikipedia",label:"Wikipedia",url:"https://en.wikipedia.org/wiki/Special:Search?search="},{id:"scholar",label:"Scholar",url:"https://scholar.google.com/scholar?q="},{id:"youtube",label:"YouTube",url:"https://www.youtube.com/results?search_query="},{id:"reddit",label:"Reddit",url:"https://www.reddit.com/search/?q="},{id:"github",label:"GitHub",url:"https://github.com/search?q="},{id:"images",label:"Images",url:"https://www.google.com/search?tbm=isch&q="},{id:"news",label:"News",url:"https://news.google.com/search?q="},{id:"maps",label:"Maps",url:"https://www.google.com/maps/search/"}] as const;
+import ENGINE_CATALOG from "./search-engines.json";
+const SEARCH_ENGINES = ENGINE_CATALOG.engines.map(engine => ({id:engine.id,label:engine.name,url:engine.template}));
 function toUrl(value: string) {
   const q = value.trim();
   if (!q) return HOME;
@@ -30,7 +31,7 @@ export default function Home() {
   const [bookmarks, setBookmarks] = useState<Tab[]>([]);
   const [history, setHistory] = useState<Tab[]>([]);
   const [storageReady, setStorageReady] = useState(false);
-  const [searchProvider, setSearchProvider] = useState<"google"|"bing"|"duckduckgo"|"brave"|"wikipedia">("google");
+  const [searchProvider, setSearchProvider] = useState<string>("google");
   const [downloadsHelp, setDownloadsHelp] = useState("");
   const [privateMode, setPrivateMode] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("Checking for updates…");
