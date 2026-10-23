@@ -1,10 +1,13 @@
 const input=document.getElementById("url"), frame=document.getElementById("frame"), welcome=document.getElementById("welcome");
 let historyList=[],index=-1;
-let tabs=[{id:1,title:"New tab",url:""}],activeTabId=1,nextTabId=2;
+const initialTabs=(()=>{try{const saved=JSON.parse(localStorage.getItem("orbit.tabs.v1")||"[]");const valid=Array.isArray(saved)?saved.filter(t=>t&&Number.isFinite(t.id)&&typeof t.url==="string").slice(0,20):[];return valid.length?valid:[{id:1,title:"New tab",url:""}]}catch{return [{id:1,title:"New tab",url:""}]}})();
+let tabs=initialTabs,activeTabId=Number(localStorage.getItem("orbit.activeTabId.v1"))||tabs[0].id,nextTabId=Math.max(0,...tabs.map(t=>t.id))+1;
+if(!tabs.some(t=>t.id===activeTabId))activeTabId=tabs[0].id;
+function persistTabs(){try{localStorage.setItem("orbit.tabs.v1",JSON.stringify(tabs.slice(0,20)));localStorage.setItem("orbit.activeTabId.v1",String(activeTabId))}catch{}}
 function renderTabs(){
  const bar=document.getElementById("tabsBar"); if(!bar)return; bar.replaceChildren();
  tabs.forEach(tab=>{const chip=document.createElement("button");chip.className="tabChip"+(tab.id===activeTabId?" active":"");chip.title=tab.url||"New tab";const title=document.createElement("span");title.textContent=tab.title||"New tab";chip.appendChild(title);if(tabs.length>1){const close=document.createElement("span");close.className="tabClose";close.textContent="×";close.title="Close tab";close.onclick=e=>{e.stopPropagation();closeTab(tab.id)};chip.appendChild(close)}chip.onclick=()=>switchTab(tab.id);bar.appendChild(chip)});
- const add=document.createElement("button");add.className="tabAdd";add.textContent="＋";add.title="New tab";add.onclick=newTab;bar.appendChild(add);
+ const add=document.createElement("button");add.className="tabAdd";add.textContent="＋";add.title="New tab";add.onclick=newTab;bar.appendChild(add);persistTabs();
 }
 function saveActiveTab(){const tab=tabs.find(t=>t.id===activeTabId);if(tab){tab.url=frame.style.display!=="none"?input.value.trim():"";tab.title=tab.url?tab.url.replace(/^https?:\/\//,"").split("/")[0]:"New tab"}}
 function switchTab(id){saveActiveTab();const tab=tabs.find(t=>t.id===id);if(!tab)return;activeTabId=id;historyList=[];index=-1;if(tab.url){go(tab.url,false)}else{frame.style.display="none";welcome.style.display="block";input.value=""}renderTabs()}
