@@ -51,10 +51,10 @@ jobs:
         run: |
           set -euo pipefail
           PRODUCTS_DIR="ios/build/Build/Products"
-          APP_PATH="$(find "$PRODUCTS_DIR" -type d -name '*.app' -path '*Debug-iphonesimulator*' -print -quit)"
+          APP_PATH="$(find "$PRODUCTS_DIR" -type d -name '*.app' -path '*iphonesimulator*' -print -quit)"
           if [ -z "$APP_PATH" ]; then
-            echo "No .app bundle found under $PRODUCTS_DIR"
-            find "$PRODUCTS_DIR" -maxdepth 4 -print || true
+            echo "No simulator .app found under $PRODUCTS_DIR; listing build products:"
+            find ios/build -type d -name '*.app' -print || true
             exit 1
           fi
           PLIST="$APP_PATH/Info.plist"
