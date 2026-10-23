@@ -50,10 +50,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          APP_PATH="$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)"
-          test -n "$APP_PATH"
-          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Info.plist"
-          /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Info.plist"
+          PRODUCTS_DIR="ios/build/Build/Products"
+          APP_PATH="$(find "$PRODUCTS_DIR" -type d -name '*.app' -path '*Debug-iphonesimulator*' -print -quit)"
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app bundle found under $PRODUCTS_DIR"
+            find "$PRODUCTS_DIR" -maxdepth 4 -print || true
+            exit 1
+          fi
+          PLIST="$APP_PATH/Info.plist"
+          test -f "$PLIST" || { echo "Missing Info.plist: $PLIST"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$PLIST"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$PLIST"
       - name: Package simulator app
         run: |
           mkdir -p builds/ios
