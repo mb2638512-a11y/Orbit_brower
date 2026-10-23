@@ -31,14 +31,27 @@ document.getElementById("sideHome")?.addEventListener("click",()=>document.getEl
 document.getElementById("sideBookmarks")?.addEventListener("click",()=>showList("bookmarks"));
 document.getElementById("sideHistory")?.addEventListener("click",()=>showList("history"));
 document.getElementById("sideAI")?.addEventListener("click",()=>document.getElementById("globalai").click());
-document.getElementById("sideSettings")?.addEventListener("click",()=>{const panel=document.getElementById("listPanel"),title=document.getElementById("listTitle"),items=document.getElementById("listItems");panel.style.display="block";title.textContent="Browser settings";items.replaceChildren();const intro=document.createElement("p");intro.textContent="Manage Orbit appearance, local browsing data and platform updates.";intro.style.cssText="color:#9eacc9;line-height:1.6";items.appendChild(intro);const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0";const theme=document.createElement("button");theme.textContent=document.body.classList.contains("light")?"Switch to dark theme":"Switch to light theme";theme.onclick=()=>{applyTheme(document.body.classList.contains("light")?"dark":"light");theme.textContent=document.body.classList.contains("light")?"Switch to dark theme":"Switch to light theme"};actions.appendChild(theme);const clear=document.createElement("button");clear.textContent="Clear browsing data";clear.style.background="#9f3344";clear.onclick=()=>document.getElementById("privacy").click();actions.appendChild(clear);const releases=document.createElement("button");releases.textContent="Check builds & updates ↗";releases.onclick=()=>window.open("https://github.com/mb2638512-a11y/Orbit_brower/releases","_blank","noopener,noreferrer");actions.appendChild(releases);const close=document.createElement("button");close.textContent="Close";close.style.background="#34415e";close.onclick=()=>panel.style.display="none";actions.appendChild(close);items.appendChild(actions);});
+document.getElementById("sideSettings")?.addEventListener("click",()=>{
+ const panel=document.getElementById("listPanel"),title=document.getElementById("listTitle"),items=document.getElementById("listItems");
+ panel.style.display="block";title.textContent="Settings";items.replaceChildren();
+ const intro=document.createElement("p");intro.textContent="Make Orbit feel right for you. Bookmarks, history and preferences are stored locally in this browser.";intro.className="panelIntro";items.appendChild(intro);
+ const addRow=(heading,description,label,action,danger=false)=>{const row=document.createElement("section");row.className="settingRow";const copy=document.createElement("div");copy.className="settingCopy";const h=document.createElement("strong");h.textContent=heading;const p=document.createElement("p");p.textContent=description;copy.append(h,p);const b=document.createElement("button");b.textContent=label;if(danger)b.className="dangerButton";b.onclick=action;row.append(copy,b);items.appendChild(row)};
+ addRow("Appearance",document.body.classList.contains("light")?"Light theme is active":"Dark theme is active","Switch theme",()=>{applyTheme(document.body.classList.contains("light")?"dark":"light");document.getElementById("sideSettings").click()});
+ addRow("Bookmarks",bookmarks.length+" saved pages","Manage",()=>showList("bookmarks"));
+ addRow("Browsing history",visits.length+" recent pages","Manage",()=>showList("history"));
+ addRow("Global AI","Connect your own backend. Model providers are not configured automatically.","Open AI Hub",()=>{panel.style.display="none";document.getElementById("aiPanel").style.display="block";document.getElementById("aiEndpoint").focus()});
+ addRow("Builds & updates","Find installers and platform release notes.","Open releases ↗",()=>window.open("https://github.com/mb2638512-a11y/Orbit_brower/releases","_blank","noopener,noreferrer"));
+ addRow("Browsing data","Clear local bookmarks, history and the current tab session. This cannot erase website/server logs or downloaded files.","Clear data",()=>document.getElementById("privacy").click(),true);
+ const footer=document.createElement("div");footer.className="settingsFooter";const done=document.createElement("button");done.textContent="Done";done.onclick=()=>panel.style.display="none";footer.appendChild(done);items.appendChild(footer);
+});
 document.getElementById("moreEngines")?.addEventListener("click",()=>{const select=document.getElementById("engineSelect");if(select){select.focus();select.click()}});
 
 function go(q,push=true){const u=resolve(q);frame.src=u;frame.style.display="block";welcome.style.display="none";input.value=u;const tab=tabs.find(t=>t.id===activeTabId);if(tab){tab.url=u;tab.title=u.replace(/^https?:\\/\\//,"").split("/")[0]||u}renderTabs();if(push){historyList=historyList.slice(0,index+1);historyList.push(u);index=historyList.length-1;visits=[{url:u,title:u,visitedAt:Date.now()},...visits.filter(v=>v.url!==u)].slice(0,100);persist()}}
 document.getElementById("search").addEventListener("submit",e=>{e.preventDefault();go(input.value)});
 document.getElementById("back").onclick=()=>{if(index>0){index--;go(historyList[index],false)}};
 document.getElementById("forward").onclick=()=>{if(index<historyList.length-1){index++;go(historyList[index],false)}};
-document.getElementById("home").onclick=()=>{frame.style.display="none";welcome.style.display="block";input.value=""};
+function showHome(){frame.src="about:blank";frame.style.display="none";welcome.style.display="block";input.value="";historyList=[];index=-1;const tab=tabs.find(t=>t.id===activeTabId);if(tab){tab.url="";tab.title="New tab"}renderTabs()}
+document.getElementById("home").onclick=showHome;
 document.getElementById("reload").onclick=()=>{try{frame.contentWindow.location.reload()}catch{frame.src=frame.src}};
 
 // Update entry point: open Orbit release downloads so users can select the build for their OS.
@@ -64,7 +77,7 @@ document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLower
 document.getElementById("bookmark").addEventListener("click",()=>{const u=input.value.trim();if(!u)return;const url=resolve(u);if(!bookmarks.some(b=>b.url===url)){bookmarks=[{url,title:url,savedAt:Date.now()},...bookmarks];persist()}showList("bookmarks")});
 document.getElementById("showBookmarks").addEventListener("click",()=>showList("bookmarks"));
 document.getElementById("showHistory").addEventListener("click",()=>showList("history"));
-document.getElementById("privacy").addEventListener("click",()=>{if(!confirm("Clear Orbit saved bookmarks, history and current browsing session? This cannot remove website/server logs or downloaded files."))return;bookmarks=[];visits=[];historyList=[];index=-1;persist();try{frame.src="about:blank"}catch{};frame.style.display="none";welcome.style.display="block";document.getElementById("listPanel").style.display="none";input.value=""});
+document.getElementById("privacy").addEventListener("click",()=>{if(!confirm("Clear Orbit saved bookmarks, history and current browsing session? This cannot remove website/server logs or downloaded files."))return;bookmarks=[];visits=[];historyList=[];index=-1;tabs=[{id:nextTabId++,title:"New tab",url:""}];activeTabId=tabs[0].id;persist();persistTabs();try{frame.src="about:blank"}catch{};frame.style.display="none";welcome.style.display="block";document.getElementById("listPanel").style.display="none";document.getElementById("aiPanel").style.display="none";input.value="";renderTabs()});
 
 /* Global AI API client: secrets remain on the server, never in this renderer. */
 const aiEndpointInput=document.getElementById("aiEndpoint");
