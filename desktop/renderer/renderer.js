@@ -31,7 +31,7 @@ document.getElementById("updates").addEventListener("click",()=>{ window.open("h
 // Global AI prototype hub: search shortcut plus transparent status for integrations still requiring backend setup.
 const aiPanel=document.getElementById("aiPanel");
 document.getElementById("globalai").addEventListener("click",()=>{aiPanel.style.display=aiPanel.style.display==="none"?"block":"none";});
-document.getElementById("aiSearch").addEventListener("submit",e=>{e.preventDefault();const q=document.getElementById("aiQuery").value.trim();if(q)go("https://www.google.com/search?q="+encodeURIComponent(q));});
+// AI search form is handled below by callGlobalAI("search"); do not also navigate to Google.
 document.getElementById("aiSearchTab").addEventListener("click",()=>document.getElementById("aiStatus").textContent="Search shortcut is available. A self-hosted SearXNG gateway can aggregate many upstream engines once deployed and configured.");
 document.getElementById("aiModels").addEventListener("click",()=>{document.getElementById("aiStatus").textContent="AI model routing is planned; connect model provider APIs and secure server-side credentials before enabling it.";window.open("https://models.dev/","_blank","noopener,noreferrer");});
 document.getElementById("aiTools").addEventListener("click",()=>{document.getElementById("aiStatus").textContent="Browser automation is planned; connect and test controlled tools. Sensitive actions should require user approval.";window.open("https://playwright.dev/","_blank","noopener,noreferrer");});
