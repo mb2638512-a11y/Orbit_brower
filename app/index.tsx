@@ -137,7 +137,7 @@ export default function Home() {
     const url = !trimmed || trimmed === HOME ? HOME : trimmed && !looksLikeUrl && !trimmed.includes("://") ? selectedEngine.url + encodeURIComponent(trimmed) : toUrl(raw);
     updateCurrent({ url, title: url === HOME ? "Orbit Home" : url });
     setInput(url === HOME ? "" : url);
-    setHistory(old => privateMode ? old : [{ id: Date.now(), title: url, url }, ...old.filter(h => h.url !== url)].slice(0, 100));
+    if (url !== HOME) setHistory(old => privateMode ? old : [{ id: Date.now(), title: url, url }, ...old.filter(h => h.url !== url)].slice(0, 100));
     setShowPanel("none");
     Keyboard.dismiss();
   };
