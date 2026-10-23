@@ -15,6 +15,45 @@ nav{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}nav button{background:#2
 main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;min-height:0;background:radial-gradient(ellipse at 50% 35%,#192546 0%,#0b1020 68%)}body.light main{background:radial-gradient(ellipse at 50% 35%,#eef0ff 0%,#f4f6fb 68%)}
 #welcome{text-align:center;color:#9eacc9;max-width:560px;padding:42px 32px;border:1px solid #28334d;border-radius:24px;background:linear-gradient(145deg,#121b30dd,#0d1425dd);box-shadow:0 24px 70px #0003}#welcome h1{color:white;font-size:36px;letter-spacing:-1px;margin:0 0 12px}#welcome p{font-size:15px;line-height:1.7}body.light #welcome{background:linear-gradient(145deg,#fff,#f8f9ff);border-color:#dbe2ef;box-shadow:0 24px 70px #34405412}#frame{display:none;width:100%;height:100%;border:0;border-radius:10px;background:white}
 small{color:#8d9bb9}
+
+/* Cross-page visual system: consistent surfaces, controls and readable layouts. */
+header{padding:18px clamp(12px,2vw,26px)}
+.brand{display:flex;align-items:center;gap:4px;font-size:20px;margin-bottom:15px}
+.bar{align-items:center}
+.bar button{min-height:44px;padding-inline:18px;box-shadow:0 4px 14px #6558f526}
+.bar input{min-height:44px}
+.browserNav{gap:7px;flex-wrap:wrap}
+.browserNav button{min-height:38px;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.browserNav button:active,#sidebar button:active{transform:translateY(1px)}
+#sidebar{padding:16px 10px;gap:6px}
+#sidebar button{min-height:40px;border:1px solid transparent;transition:background .15s ease,border-color .15s ease}
+#sidebar button:hover{border-color:#34415e}
+body.light #sidebar button:hover{border-color:#dbe2ef}
+#aiPanel,#listPanel{padding:clamp(14px,2vw,24px);box-shadow:0 12px 36px #0002}
+#aiPanel h2{font-size:21px;letter-spacing:-.5px}
+#aiPanel .bar{margin-top:10px}
+#aiPanel .bar input{min-width:140px}
+#aiPanel nav{padding-top:10px;border-top:1px solid #28334d}
+#aiPanel nav button{border:1px solid #34415e;border-radius:10px}
+#listPanel{max-height:min(56vh,520px);border-radius:0 0 18px 18px}
+#listTitle{display:block;font-size:18px;letter-spacing:-.3px;margin:2px 0 12px}
+#listItems>div{padding:12px 0;border-bottom:1px solid #28334d;overflow-wrap:anywhere}
+#listItems button{margin:4px 6px 4px 0}
+body.light #listItems>div{border-color:#e4e7ec}
+main{padding:clamp(12px,2.5vw,28px)}
+#welcome{width:min(100%,620px)}
+#frame{border-radius:12px;box-shadow:0 12px 32px #0002}
+@media(max-width:760px){
+ header{padding:12px}
+ .brand{margin-bottom:10px}
+ .browserNav{overflow-x:auto;flex-wrap:nowrap}
+ .browserNav button{flex-shrink:0}
+ #aiPanel .bar{flex-wrap:wrap}
+ #aiPanel .bar input{flex-basis:100%}
+ #welcome{padding:30px 18px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+
 </style>
 </head><body>
 <header><div class="brand"><span class="orbitMark"><svg viewBox="0 0 32 32" width="23" height="23" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="white" stroke-width="3"/><circle cx="16" cy="16" r="4" fill="white"/><path d="M22 4l3 5-5 1" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>ORBIT</span></div>
