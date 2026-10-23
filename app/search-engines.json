@@ -1,7 +1,7 @@
 {
   "version": 1,
   "count": 130,
-  "description": "Search shortcut catalog. The default is Google; choose an available provider from the compact selector beside the address/search field. URLs open third-party provider results; availability and features vary.",
+  "description": "Search shortcut catalog. The default is Google; choose a provider from the address bar. Provider access, query formats and availability vary. Some sites may return HTTP 403 due to their own anti-automation, network, regional or embedded-browser policies; Orbit cannot bypass provider restrictions. Use an alternate provider when blocked.",
   "engines": [
     {
       "id": "google0",
@@ -591,7 +591,7 @@
       "id": "duckduckgoimages74",
       "name": "DuckDuckGo Images",
       "category": "images",
-      "template": "https://duckduckgo.com/?q=",
+      "template": "https://duckduckgo.com/?iax=images&ia=images&q=",
       "mode": "external-search",
       "requiresAuth": false
     },
@@ -767,7 +767,7 @@
       "id": "wellfound96",
       "name": "Wellfound",
       "category": "jobs",
-      "template": "https://wellfound.com/jobs",
+      "template": "https://wellfound.com/jobs?query=",
       "mode": "external-search",
       "requiresAuth": false
     },
@@ -815,7 +815,7 @@
       "id": "mastodon102",
       "name": "Mastodon",
       "category": "social",
-      "template": "https://mastodon.social/explore",
+      "template": "https://mastodon.social/search?q=",
       "mode": "external-search",
       "requiresAuth": false
     },
@@ -887,7 +887,7 @@
       "id": "uspto111",
       "name": "USPTO",
       "category": "research",
-      "template": "https://ppubs.uspto.gov/pubwebapp/",
+      "template": "https://ppubs.uspto.gov/pubwebapp/?search=",
       "mode": "external-search",
       "requiresAuth": false
     },
