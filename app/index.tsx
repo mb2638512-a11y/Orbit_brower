@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, Share } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, Platform, ScrollView, Share, BackHandler } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -100,6 +100,31 @@ export default function Home() {
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.readerMode.v1", String(readerMode)).catch(()=>{}); }, [readerMode,storageReady]);
   const web = useRef<WebView>(null);
   const current = tabs.find(t => t.id === active) || tabs[0];
+  // Android system back: close overlays first, then navigate page history.
+  // If there is no page history, return to Home instead of unexpectedly exiting.
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (Keyboard.isVisible()) {
+        Keyboard.dismiss();
+        return true;
+      }
+      if (showPanel !== "none") {
+        setShowPanel("none");
+        return true;
+      }
+      if (canGoBack) {
+        web.current?.goBack();
+        return true;
+      }
+      if (current.url !== HOME) {
+        go(HOME);
+        return true;
+      }
+      return false;
+    });
+    return () => subscription.remove();
+  }, [showPanel, canGoBack, current.url, active, tabs.length]);
   const bg = dark ? "#0b1020" : "#f4f6fb";
   const panel = dark ? "#151d31" : "#ffffff";
   const fg = dark ? "#f5f7ff" : "#10182b";
