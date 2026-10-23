@@ -21,6 +21,7 @@ export default function Home() {
   const [dark, setDark] = useState(true);
   const [input, setInput] = useState("");
   const [tabs, setTabs] = useState<Tab[]>([{ id: 1, title: "New tab", url: HOME }]);
+  const [tabsRestored, setTabsRestored] = useState(false);
   const [active, setActive] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
@@ -82,7 +83,7 @@ export default function Home() {
     let alive = true;
     (async () => {
       try {
-        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1","orbit.globalai.endpoint.v1","orbit.downloads.v1","orbit.desktopSite.v1","orbit.readerMode.v1"]);
+        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1","orbit.globalai.endpoint.v1","orbit.downloads.v1","orbit.desktopSite.v1","orbit.readerMode.v1","orbit.tabs.v1","orbit.activeTab.v1"]);
         if (!alive) return;
         const stored = Object.fromEntries(values);
         if (stored["orbit.bookmarks.v1"]) setBookmarks(JSON.parse(stored["orbit.bookmarks.v1"]));
@@ -92,8 +93,9 @@ export default function Home() {
         if (stored["orbit.downloads.v1"]) setDownloads(JSON.parse(stored["orbit.downloads.v1"]));
         if (stored["orbit.desktopSite.v1"]) setDesktopSite(stored["orbit.desktopSite.v1"] === "true");
         if (stored["orbit.readerMode.v1"]) setReaderMode(stored["orbit.readerMode.v1"] === "true");
+        if (stored["orbit.tabs.v1"]) { const restored = JSON.parse(stored["orbit.tabs.v1"]); if (Array.isArray(restored) && restored.length) { const safeTabs = restored.filter((t:any)=>t && Number.isFinite(t.id) && typeof t.url === "string").slice(0,20); if (safeTabs.length) { setTabs(safeTabs); const wanted = Number(stored["orbit.activeTab.v1"]); setActive(safeTabs.some((t:any)=>t.id===wanted)?wanted:safeTabs[0].id); const selected = safeTabs.find((t:any)=>t.id===(safeTabs.some((t:any)=>t.id===wanted)?wanted:safeTabs[0].id)); setInput(selected?.url===HOME?"":selected?.url||""); } } }
       } catch { /* storage may be unavailable on a device; browser remains usable */ }
-      finally { if (alive) setStorageReady(true); }
+      finally { if (alive) { setStorageReady(true); setTabsRestored(true); } }
     })();
     return () => { alive = false; };
   }, []);
@@ -104,6 +106,8 @@ export default function Home() {
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.downloads.v1", JSON.stringify(downloads.slice(0,50))).catch(()=>{}); }, [downloads,storageReady]);
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.desktopSite.v1", String(desktopSite)).catch(()=>{}); }, [desktopSite,storageReady]);
   useEffect(() => { if (storageReady) AsyncStorage.setItem("orbit.readerMode.v1", String(readerMode)).catch(()=>{}); }, [readerMode,storageReady]);
+  useEffect(() => { if (storageReady && tabsRestored) AsyncStorage.setItem("orbit.tabs.v1", JSON.stringify(tabs.slice(0,20))).catch(()=>{}); }, [tabs,storageReady,tabsRestored]);
+  useEffect(() => { if (storageReady && tabsRestored) AsyncStorage.setItem("orbit.activeTab.v1", String(active)).catch(()=>{}); }, [active,storageReady,tabsRestored]);
   const web = useRef<WebView>(null);
   const lastHistoryUrl = useRef("");
   const current = tabs.find(t => t.id === active) || tabs[0];
