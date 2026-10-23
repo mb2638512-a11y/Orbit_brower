@@ -20,23 +20,14 @@ jobs:
           node-version: 22
       - name: Install Expo app dependencies
         run: npm install --legacy-peer-deps
-      - name: Generate premium Orbit app icon
+      - name: Generate desktop app icon
         run: |
           npm install --no-save --package-lock=false sharp
           node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
-      - name: Install Expo web dependencies without mutating Expo CLI
-        run: npm install --no-save --package-lock=false --legacy-peer-deps react-dom@19.1.0 react-native-web@^0.21.0 expo-linking@~8.0.8 expo-constants@~18.0.10 expo-font@~14.0.9
-      - name: Generate premium Orbit app icon
-        run: |
-          npm install --no-save --package-lock=false sharp
-          node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
-      - name: Export web app
-        run: npx expo export --platform web
       - name: Prepare desktop package
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force desktop/renderer | Out-Null
-          Copy-Item dist/* desktop/renderer/ -Recurse -Force
+          if (!(Test-Path 'desktop/renderer/index.html') -or !(Test-Path 'desktop/renderer/renderer.js')) { throw 'Desktop renderer files are missing.' }
           npm --prefix desktop install --include=dev
       - name: Verify Electron installation
         run: npm --prefix desktop exec -- electron --version
@@ -75,10 +66,10 @@ jobs:
           node-version: 22
       - name: Install Expo app dependencies
         run: npm install --legacy-peer-deps
-      - name: Export web app
-        run: npx expo export --platform web
+      - name: Verify desktop renderer files
+        run: test -f desktop/renderer/index.html && test -f desktop/renderer/renderer.js
       - name: Prepare desktop package
-        run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install --include=dev
+        run: npm --prefix desktop install --include=dev
       - name: Verify Electron installation
         run: npm --prefix desktop exec -- electron --version
         env:
