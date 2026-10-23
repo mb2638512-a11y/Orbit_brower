@@ -14,6 +14,8 @@ function switchTab(id){saveActiveTab();const tab=tabs.find(t=>t.id===id);if(!tab
 function newTab(){if(tabs.length>=20){alert("Orbit supports up to 20 tabs.");return}saveActiveTab();const tab={id:nextTabId++,title:"New tab",url:""};tabs.push(tab);activeTabId=tab.id;historyList=[];index=-1;frame.style.display="none";welcome.style.display="block";input.value="";renderTabs()}
 function closeTab(id){if(tabs.length===1){tabs=[{id:nextTabId++,title:"New tab",url:""}];activeTabId=tabs[0].id;historyList=[];index=-1;frame.style.display="none";welcome.style.display="block";input.value="";renderTabs();return}const wasActive=id===activeTabId;tabs=tabs.filter(t=>t.id!==id);if(wasActive){activeTabId=tabs[tabs.length-1].id;const tab=tabs[tabs.length-1];historyList=[];index=-1;if(tab.url)go(tab.url,false);else{frame.style.display="none";welcome.style.display="block";input.value=""}}renderTabs()}
 renderTabs();
+const restoredActiveTab=tabs.find(t=>t.id===activeTabId);
+if(restoredActiveTab&&restoredActiveTab.url){go(restoredActiveTab.url,false)}
 const loadList=(key)=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []}};
 let bookmarks=loadList("orbit.bookmarks.v1"),visits=loadList("orbit.history.v1");
 function persist(){try{localStorage.setItem("orbit.bookmarks.v1",JSON.stringify(bookmarks));localStorage.setItem("orbit.history.v1",JSON.stringify(visits.slice(0,100)))}catch{}}
