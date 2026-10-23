@@ -170,13 +170,12 @@ export default function Home() {
     finally { setAiBusy(false); }
   };
   const newTab = () => {
-    if (tabs.length >= 20) { setShowPanel("settings"); return; }
+    if (tabs.length >= 20) { setShowPanel("tabs"); return; }
     const id = Date.now();
     setTabs(old => [...old, { id, title: "New tab", url: HOME }]);
     setActive(id); setInput(""); setShowPanel("none");
   };
   const closeTab = (id: number) => {
-    setLastClosedTab(tabs.find(t => t.id === id) || null);
     if (tabs.length === 1) { setLastClosedTab(tabs[0]); setTabs([{ id: Date.now(), title: "New tab", url: HOME }]); setInput(""); return; }
     setLastClosedTab(tabs.find(t => t.id === id) || null);
     const remaining = tabs.filter(t => t.id !== id);
@@ -197,7 +196,7 @@ export default function Home() {
         <View style={s.globeLogo}><View style={s.globeLatitude}/><View style={s.globeMeridian}/><View style={s.globeHorizon}/><View style={s.globeStar}/></View>
         <View><Text style={[s.brand,{color:fg}]}>ORBIT</Text><Text style={[s.sub,{color:muted}]}>YOUR WORLD, OPEN</Text></View>
         <View style={{flex:1}}/>
-        <Pressable accessibilityRole="button" accessibilityLabel="Toggle incognito mode" onPress={()=>setPrivateMode(v=>!v)} style={[s.square,{backgroundColor:privateMode?"#6558f5":panel}]}><Text style={{color:privateMode?"#ffffff":fg,fontSize:17}}>◉</Text></Pressable><Pressable accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Toggle incognito mode" onPress={()=>setPrivateMode(v=>!v)} style={[s.square,{backgroundColor:privateMode?"#6558f5":panel}]}><Text style={{color:privateMode?"#ffffff":fg,fontSize:17}}>◉</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="New tab" onPress={newTab} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:21}}>＋</Text></Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Toggle light or dark theme" onPress={()=>setDark(!dark)} style={[s.square,{backgroundColor:panel}]}><Text style={{color:fg,fontSize:18}}>{dark?"☼":"☾"}</Text></Pressable>
       </View>
       <View style={[s.address,{backgroundColor:panel,borderColor:dark?"#29344e":"#e0e5ef"}]}>
