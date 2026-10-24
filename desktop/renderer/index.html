@@ -74,6 +74,45 @@ main{padding:clamp(12px,2.5vw,28px)}
 
 
 #listPanel{padding:20px!important;max-height:min(62vh,560px)!important;background:linear-gradient(145deg,#121b30,#0d1425)!important;border:1px solid #28334d;border-radius:0 0 18px 18px!important;box-shadow:0 18px 42px #0002}#listTitle{display:block;font-size:20px;letter-spacing:-.4px;margin-bottom:8px}#listItems{display:grid;gap:10px}.panelIntro{color:#9eacc9;line-height:1.65;margin:4px 0 10px;max-width:720px}.settingRow{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 14px;border:1px solid #28334d;border-radius:14px;background:#151f34}.settingCopy{min-width:0}.settingCopy strong{display:block;font-size:14px;color:#f5f7ff}.settingCopy p{margin:5px 0 0;color:#9eacc9;font-size:12px;line-height:1.6}.settingRow button,.settingsFooter button{flex-shrink:0;border:1px solid #394867;border-radius:10px;background:#202b43;color:#f5f7ff;padding:9px 12px}.settingRow button:hover,.settingsFooter button:hover{background:#6558f5}.settingRow .dangerButton{background:#6f2637;border-color:#8b3347}.settingsFooter{display:flex;justify-content:flex-end;padding-top:6px}body.light #listPanel{background:linear-gradient(145deg,#fff,#f7f8ff)!important;border-color:#dbe2ef}body.light .settingRow{background:#fff;border-color:#dbe2ef}body.light .settingCopy strong{color:#172033}body.light .settingCopy p,body.light .panelIntro{color:#667085}body.light .settingRow button,body.light .settingsFooter button{background:#f4f6fb;color:#172033;border-color:#dbe2ef}body.light .settingRow .dangerButton{background:#fff0f0;color:#a12838;border-color:#f4c7ce}@media(max-width:760px){#listPanel{padding:14px!important}.settingRow{align-items:flex-start;flex-direction:column;gap:10px}.settingRow button{align-self:flex-start}}
+
+/* Orbit UI audit pass: shared polish for every desktop panel and viewport. */
+html,body{min-width:320px;overflow:hidden}
+.layout{min-width:0}
+header{position:relative;z-index:2}
+.browserNav button:focus-visible,#sidebar button:focus-visible,#listPanel button:focus-visible,#aiPanel button:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+#listPanel{overflow:auto;overscroll-behavior:contain;border:1px solid #28334d;background:#111a2d}
+#listTitle{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#listItems{min-width:0}
+#listItems a{overflow-wrap:anywhere}
+#listItems button{min-height:36px}
+#aiPanel{overflow:auto;overscroll-behavior:contain;border:1px solid #28334d;background:#111a2d}
+#aiPanel input,#aiPanel select,#listPanel input{width:100%;min-width:0}
+#aiResults{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+#aiStatus{line-height:1.6}
+#frame{min-height:0}
+button{transition:background-color .15s ease,border-color .15s ease,opacity .15s ease}
+button:active{filter:brightness(.94)}
+body.light #listPanel,body.light #aiPanel{background:#fff;border-color:#dbe2ef}
+body.light #listItems>div{border-color:#e4e7ec}
+@media(max-width:760px){
+ .layout{min-width:0}
+ #sidebar{width:54px;padding-inline:3px}
+ #sidebar button{padding:10px 0;min-height:42px}
+ .browserNav{max-width:100%;overflow-x:auto;scrollbar-width:thin}
+ .browserNav button{flex-shrink:0}
+ #listPanel,#aiPanel{max-width:100%;max-height:48vh}
+}
+@media(max-width:480px){
+ header{padding:10px}
+ .bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+ .bar select{grid-column:1/-1;max-width:none;width:100%}
+ .bar input{width:100%;min-width:0}
+ .bar button{padding-inline:13px}
+ .browserNav button{font-size:11px}
+ #welcome{padding:24px 14px}
+ #welcome h1{font-size:25px}
+}
+
 </style>
 </head><body>
 <header><div class="brand"><span class="orbitMark globeMark" aria-hidden="true"><svg viewBox="0 0 32 32" width="25" height="25"><circle cx="16" cy="16" r="12" fill="none" stroke="white" stroke-width="1.8"/><ellipse cx="16" cy="16" rx="5.5" ry="12" fill="none" stroke="white" stroke-width="1.5"/><path d="M4 16h24M7 9.5h18M7 22.5h18" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="23.5" cy="8" r="3" fill="#22d3ee" stroke="#0d1425" stroke-width="1.3"/></svg></span><span>ORBIT</span></div>
