@@ -1,4 +1,4 @@
-const { app, BrowserWindow, session } = require("electron");
+const { app, BrowserWindow, session, shell } = require("electron");
 const path = require("path");
 function createWindow() {
   const win = new BrowserWindow({
@@ -11,12 +11,14 @@ function createWindow() {
       sandbox: true
     }
   });
+  win.webContents.setWindowOpenHandler(({ url }) => { try { const target = new URL(url); if (target.protocol === "https:" || target.protocol === "http:") shell.openExternal(target.href); } catch {} return { action: "deny" }; });
+  win.webContents.on("will-navigate", (event, targetUrl) => { if (targetUrl.startsWith("file://")) return; if (!/^https?:\\/\\//i.test(targetUrl)) event.preventDefault(); });
   win.loadFile(path.join(__dirname, "renderer", "index.html"));
 }
 app.whenReady().then(() => {
-  session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => {
-    callback(["fullscreen"].includes(permission));
-  });
+  // Deny website permissions by default until a user-visible per-site consent flow exists.
+  session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => { callback(permission === "fullscreen"); });
+  session.defaultSession.setPermissionCheckHandler((_wc, permission) => permission === "fullscreen");
   createWindow();
   app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
