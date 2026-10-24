@@ -28,20 +28,32 @@ jobs:
           node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
       - name: Generate iOS native project
         run: npx expo prebuild --platform ios --non-interactive
-      - name: Resolve workspace and scheme
+      - name: Resolve workspace and application scheme
         shell: bash
         run: |
           set -euo pipefail
           WORKSPACE="$(find ios -maxdepth 1 -type d -name '*.xcworkspace' -print -quit)"
-          test -n "$WORKSPACE"
-          SCHEME="$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null | awk '/Schemes:/{found=1;next} found && NF {gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print; exit}')"
+          test -n "$WORKSPACE" || { echo "No top-level CocoaPods workspace found."; exit 1; }
+
+          # Do not select the first listed scheme: Xcode commonly lists pod schemes
+          # (for example EXConstants) before the actual app scheme.
+          xcodebuild -list -workspace "$WORKSPACE" > /tmp/orbit-xcode-workspace-list.txt 2>&1
+          cat /tmp/orbit-xcode-workspace-list.txt
+          SCHEMES="$(awk '/Schemes:/{found=1;next} found && NF {gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print}' /tmp/orbit-xcode-workspace-list.txt)"
+          EXPECTED_SCHEME="$(basename "$WORKSPACE" .xcworkspace)"
+          SCHEME="$(printf '%s\n' "$SCHEMES" | grep -Fx "$EXPECTED_SCHEME" || true)"
+
           if [ -z "$SCHEME" ]; then
-            SCHEME="$(basename "$WORKSPACE" .xcworkspace)"
+            echo "Required app scheme '$EXPECTED_SCHEME' was not found. Refusing to build a pod/library scheme."
+            echo "Available schemes:"
+            printf '%s\n' "$SCHEMES"
+            exit 1
           fi
+
           echo "IOS_WORKSPACE=$WORKSPACE" >> "$GITHUB_ENV"
           echo "IOS_SCHEME=$SCHEME" >> "$GITHUB_ENV"
           echo "Using workspace: $WORKSPACE"
-          echo "Using scheme: $SCHEME"
+          echo "Using application scheme: $SCHEME"
       - name: Resolve native package dependencies
         run: xcodebuild -resolvePackageDependencies -workspace "$IOS_WORKSPACE" -scheme "$IOS_SCHEME"
       - name: Build iOS Simulator app
