@@ -9,7 +9,7 @@ export function buildPrivacyScript(siteProtectionOverrides: string[] = []): stri
     try {
       var allowlisted = ${overrides};
       var host = (location.hostname || '').toLowerCase();
-      if (allowlisted.some(function(h){ return h === host || host.endsWith('.' + h); })) {
+      if (allowlisted.some(function(h){ return h === host; })) {
         window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({type:'privacy',host:host,ads:0,trackers:0,disabledForSite:true}));
         return true;
       }
