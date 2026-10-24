@@ -84,7 +84,7 @@ export default function Home() {
     let alive = true;
     (async () => {
       try {
-        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1","orbit.globalai.endpoint.v1","orbit.downloads.v1","orbit.desktopSite.v1","orbit.readerMode.v1","orbit.tabs.v1","orbit.activeTab.v1","orbit.adBlockEnabled.v1"]);
+        const values = await AsyncStorage.multiGet(["orbit.bookmarks.v1","orbit.history.v1","orbit.searchProvider.v1","orbit.globalai.endpoint.v1","orbit.downloads.v1","orbit.desktopSite.v1","orbit.readerMode.v1","orbit.tabs.v1","orbit.activeTab.v1","orbit.adBlockEnabled.v1","orbit.vpn.endpoint.v1"]);
         if (!alive) return;
         const stored = Object.fromEntries(values);
         if (stored["orbit.bookmarks.v1"]) setBookmarks(JSON.parse(stored["orbit.bookmarks.v1"]));
@@ -95,6 +95,7 @@ export default function Home() {
         if (stored["orbit.desktopSite.v1"]) setDesktopSite(stored["orbit.desktopSite.v1"] === "true");
         if (stored["orbit.readerMode.v1"]) setReaderMode(stored["orbit.readerMode.v1"] === "true");
         if (stored["orbit.adBlockEnabled.v1"] !== null) setAdBlockEnabled(stored["orbit.adBlockEnabled.v1"] === "true");
+        if (stored["orbit.vpn.endpoint.v1"]) setVpnEndpoint(stored["orbit.vpn.endpoint.v1"]!);
         if (stored["orbit.tabs.v1"]) { const restored = JSON.parse(stored["orbit.tabs.v1"]); if (Array.isArray(restored) && restored.length) { const safeTabs = restored.filter((t:any)=>t && Number.isFinite(t.id) && typeof t.url === "string").slice(0,20); if (safeTabs.length) { setTabs(safeTabs); const wanted = Number(stored["orbit.activeTab.v1"]); setActive(safeTabs.some((t:any)=>t.id===wanted)?wanted:safeTabs[0].id); const selected = safeTabs.find((t:any)=>t.id===(safeTabs.some((t:any)=>t.id===wanted)?wanted:safeTabs[0].id)); setInput(selected?.url===HOME?"":selected?.url||""); } } }
       } catch { /* storage may be unavailable on a device; browser remains usable */ }
       finally { if (alive) { setStorageReady(true); setTabsRestored(true); } }
