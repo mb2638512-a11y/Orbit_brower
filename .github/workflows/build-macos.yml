@@ -24,10 +24,12 @@ jobs:
         run: |
           npm install --no-save --package-lock=false sharp
           node -e "require('sharp')('assets/orbit-icon.svg').resize(1024,1024).png().toFile('assets/orbit-icon.png').then(()=>console.log('Generated Orbit icon'))"
-      - name: Export web app
-        run: npx expo export --platform web
+      - name: Verify desktop renderer files
+        run: |
+          test -f desktop/renderer/index.html
+          test -f desktop/renderer/renderer.js
       - name: Prepare desktop package
-        run: mkdir -p desktop/renderer && cp -r dist/* desktop/renderer/ && npm --prefix desktop install --include=dev
+        run: npm --prefix desktop install --include=dev
       - name: Verify Electron installation
         run: npx --prefix desktop electron --version
       - name: Build macOS DMG
