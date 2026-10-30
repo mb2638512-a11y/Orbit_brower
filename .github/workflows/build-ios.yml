@@ -16,8 +16,8 @@ jobs:
   ios-simulator:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Install dependencies
@@ -79,14 +79,14 @@ jobs:
           APP_PATH="$(find ios/build/Build/Products/Debug-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)"
           ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" builds/ios/Orbit-Browser-iOS-Simulator.zip
           unzip -t builds/ios/Orbit-Browser-iOS-Simulator.zip
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Orbit-Browser-iOS-Simulator
           path: builds/ios/Orbit-Browser-iOS-Simulator.zip
           if-no-files-found: error
           retention-days: 90
       - name: Publish simulator build
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: orbit-browser-ios-simulator-latest
           name: Orbit Browser iOS Simulator (latest)
