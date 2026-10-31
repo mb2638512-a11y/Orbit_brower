@@ -92,19 +92,3 @@ jobs:
           make_latest: false
           overwrite_files: true
           files: desktop/dist/*.AppImage
-      - name: Remove obsolete illustrative screenshot assets
-        uses: actions/github-script@v9
-        env:
-          RELEASE_TAG: orbit-browser-linux-${{ matrix.arch }}-latest
-        with:
-          script: |
-            const release = await github.rest.repos.getReleaseByTag({owner: context.repo.owner, repo: context.repo.repo, tag: process.env.RELEASE_TAG});
-            const assets = await github.paginate(github.rest.repos.listReleaseAssets, {owner: context.repo.owner, repo: context.repo.repo, release_id: release.data.id, per_page: 100});
-            const appImages = assets.filter(asset => asset.name.toLowerCase().endsWith('.appimage'));
-            if (appImages.length === 0) throw new Error('No AppImage found; refusing to clean release assets.');
-            for (const asset of assets) {
-              if (!asset.name.toLowerCase().endsWith('.appimage')) {
-                await github.rest.repos.deleteReleaseAsset({owner: context.repo.owner, repo: context.repo.repo, asset_id: asset.id});
-                core.info('Removed non-AppImage release asset: ' + asset.name);
-              }
-            }
